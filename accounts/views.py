@@ -21,21 +21,16 @@ class SignUp(generic.CreateView):
     template_name = 'signup.html'
 
 
-class UserDetailView(LoginRequiredMixin, DetailView):
+class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = User
-    slug_field = 'username'
-    slug_field_kwargs = 'username'
-
     template_name = "detail.html"
 
-    def get_queryset(self):
-        if self.request.user.is_authenticated:
-            return User.objects.filter(username=self.username)
-        else:
-            return User.objects.none()
+    def test_func(self):
+        return self.kwargs['pk'] == self.request.user.pk
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['projects'] = Project.objects.filter(
                 owner= self.model()) 
         return context
+
