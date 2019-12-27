@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="hero box">
+  <h1 class="title">New Project</h1>
+    </div>
+    <div class="container">
+      <div class="box">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="field">
+          <div class="control">
+          {{form.as_p}}
+        <input class="button is-info" type="submit">
+      </form>
+          </div>
+    </div>
+</section>
+  
+
+{% endblock %}

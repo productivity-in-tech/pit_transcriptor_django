@@ -1,0 +1,17 @@
+<html>
+  <head></head>
+  <body>
+    <div>
+      <h1>PIT Transcriptor</h1>
+      <h2>New Project</h2>
+    </div>
+    <div>
+      <form method="POST" class="post-project">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="save btn btn-default">Save</button>
+
+      </form>
+    </div>
+  </body>
+  <html>

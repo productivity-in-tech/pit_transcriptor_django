@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section class="section">
+    <div class="container box">
+      <h2 class="subtitle is-2"> Create and manage your transcriptions for Free - 
+        <a href="/transcription/create" class="has-text-grey">Get Started Now!</a></h2>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+    <div class="columns">
+        <div class="column box is-one-third is-offset-1">
+          <h2 class="subtitle">Recent Transcriptions</h2>
+          {% for transcription in latest_transcriptions %}
+          <div>
+            <a href="/transcription/detail/{{transcription.pk}}">{{ transcription }}</a>
+          </div>
+            {% endfor %}
+        </div>
+
+        <div class="column box is-one-third is-offset-2">
+          <h2 class="subtitle">Recently Updated Projects</h2>
+          {% for project in latest_projects %}
+          <div>
+            <a href="/project/detail/{{project.pk}}">{{ project }}</a>
+          </div>
+          {% endfor %}
+        </div>
+    </div> {# Close columns #}
+    </div>{# Close container #}
+
+
+  </section>
+
+  {% include 'alpha_warning.html' %}
+{% endblock %}
+

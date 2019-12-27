@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+ {% block content%}
+
+ <section class="section">
+  <div class="container">
+    <h1 class="title is-4">{{object.name}}<a href="{{object.url}}">
+      <span class="icon has-text-info"><i class="fas fa-globe-americas"></i></span>
+      </a>
+    </h1>
+      <div class="box">
+      <p>{{object.url}}</p>
+      <p>Maintained By: {{object.owner}}</p>
+      <p>Transcriptions Created: {{object.created_by}}</p>
+      <p>Status: {{object.status}}</p>
+      <a href="" class="button is-warning is-small">Edit Transcription Settings</a>
+  </div>
+
+{% if object.status == 'not_started' %}
+  <section class="section">
+   <div class="box has-background-light">
+       <div class="container">
+         <p class="">The audio file has been uploaded, but no transcription
+         exists</p>
+         <form action="{% url 'start_transcription' pk=object.pk %}", method="POST">
+             {% csrf_token %}
+             <input type="submit" class="button is-success" value="Start Transcription"></input>
+         </form>
+       </div>
+     </div>
+   </section>
+{% endif %}
+
+  </section>
+ {% endblock %}

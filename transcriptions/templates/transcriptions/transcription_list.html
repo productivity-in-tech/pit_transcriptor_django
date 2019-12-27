@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section class="section">
+    <div class="container">
+          <h2 class="subtitle">Recent Transcriptions</h2>
+          {% for transcription in latest_transcriptions %}
+            {{ transcription }}
+          {% endfor %}
+        </div>
+  </section>
+
+{% endblock %}
+

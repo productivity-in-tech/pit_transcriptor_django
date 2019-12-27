@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block title%} PIT Transcriptor {% endblock %}</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+{% block styler %}{% endblock %}
+	<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js">
+	</script>
+</head>
+<body>
+<section class="hero is-info">
+  <div class="hero-body">
+    <div class="columns">
+    {% if user.is_authenticated %}
+      <div class="column is-narrow is-offset-8">
+        <h2>Hi {{user}}! <a class="link" href="/accounts/profile/{{user.pk}}">View Account</a></h2>
+      </div>
+      <div class="column is-narrow">
+        <h2><a class="link" href="/accounts/logout">Logout</a></h2>
+      </div>
+    {% else %}
+    <div class="column is-narrow is-offset-8">
+      <h2><a href="/accounts/login">Login</a></h2>
+    </div>
+    <div class="column is-narrow">
+      <h2><a href="/accounts/signup">Create Account</a></h2>
+    </div>
+    {% endif %}
+    </div>
+
+      <div class="container">
+        <h1 class="title is-1">
+          <a href='/'>PIT Transcriptor <em class="is-size-5">(Alpha)</em></a>
+        </h1>
+      </div>
+    </div>
+</section>
+{% block content %}
+{% endblock %} 
+<div class="container">
+<footer class="footer">
+	<p>
+		PIT Transcriptor is a <a href="https://productivityintech.com" class="link">Productivity in Tech Project</a> 
+	</p>
+	<p>
+		Code is open-source and can be seen on <span class="icon"><i class="fab fa-github"></i></span> 
+</footer>
+</div>
+</body>
+</html>

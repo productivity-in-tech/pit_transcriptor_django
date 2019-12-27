@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="section">
+  <div class="container box">
+  <h2 class="title">Login</h2>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="field">
+      <div class="control">
+    <button type="submit" class="button is-success">Login</button>
+      </div>
+      </div>
+  </form>
+  </div>
+  <div class="container">
+    <h2 class="subtitle">No Account Yet? <a href="/accounts/signup"
+        class="button is-info">Create Your Free
+        Account Today!</a></h2>
+  </div>
+</section>
+{% endblock %}
