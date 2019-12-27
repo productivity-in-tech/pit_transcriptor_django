@@ -1,15 +1,16 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.detail import DetailView
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from transcriptions.models import Project
 
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
-        model = get_user_model()
+        model = User
         fields = ("username", "email")
 
 
@@ -19,12 +20,22 @@ class SignUp(generic.CreateView):
     success_url = reverse_lazy('login')
     template_name = 'signup.html'
 
-class UserDetailView(DetailView):
-    model = get_user_model()
+
+class UserDetailView(LoginRequiredMixin, DetailView):
+    model = User
+    slug_field = 'username'
+    slug_field_kwargs = 'username'
+
     template_name = "detail.html"
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return User.objects.filter(username=self.username)
+        else:
+            return User.objects.none()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['projects'] = Project.objects.filter(
-                owner=context['object']) 
+                owner= self.model()) 
         return context

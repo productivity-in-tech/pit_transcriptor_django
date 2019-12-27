@@ -13,7 +13,7 @@
   {% if object.owner == user %}
   <p>Maintained by: <a href="/accounts/profile/{{object.owner.pk}}">You</a></p>
   {% else %}
-  <p>Maintained by: <a href="/accounts/profile/{{object.owner.pk}}">{{object.owner}}</a></p>
+  <p>Maintained by: <a href="/projects?by_user={{object.owner.pk}}">{{object.owner}}</a></p>
     {% endif %}
     <p><a href="#">{{object.owner.name}}</a></p>
   </div>

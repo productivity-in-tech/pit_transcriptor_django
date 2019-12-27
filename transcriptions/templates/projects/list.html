@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    {% if owner %}
+      <h2 class="title">Projects managed by {{owner}}</h2> 
+    {% else %}
+    <h2 class="title">Projects</h2> 
+    {% endif %}
+    </div>
+      <div class="container">
+        <section class="section">
+        {% for project in object_list %}
+        <div class="box">
+        <a href="/project/detail/{{project.pk}}">{{ project }}</a>
+        </div>
+        {% endfor %}
+        </section>
+      </div>
+</section>
+{% endblock %}
