@@ -47,10 +47,14 @@ class TranscriptionDetailView(DetailView):
         obj = super().get_object()
 
         if obj.status == 'in_progress':
-            print(obj.update_transcription_status())
+            if obj.update_transcription_status() == 'completed':
+                new_text = TranscriptionText.create()
+                new_text.transcription = object
+                new_text.transcription_text = object.build_amazon_speaker_transcription()
+                new_text.save()
 
         return obj
-
+                
 
 class TranscriptionUpdateView(UpdateView):
     model = Transcription

@@ -129,6 +129,17 @@ class Transcription(models.Model):
         self.save()
         return self.status
 
+    def build_amazon_speaker_transcription(self):
+        json_file = amazon.get_transcription(str(transcription_key)) # returns the Output.json file generated from amazon
+        speaker_pairs = amazon.build_speaker_pairs(json_file) # makes speaker/transcript pairs
+        return '\n\n'.join(list.map(amazon.build_text, speaker_pairs)) # the thing that expands the zip files
+
+    @property
+    def latest_transcription(self):
+        try:
+            return self.TranscribedTexts.latest()
+        except:
+            return 'No Transcription Has Been Created Yet'
 
 
     def __str__(self):
@@ -136,7 +147,11 @@ class Transcription(models.Model):
 
 
 class TranscriptionText(models.Model):
-    transcription = models.ForeignKey(Transcription, on_delete=models.CASCADE)
+    transcription = models.ForeignKey(
+            Transcription,
+            on_delete=models.CASCADE,
+            related_name='TranscribedTexts',
+            )
     updated_date = models.DateTimeField(default=timezone.now)
     transcription_text = models.TextField()
     editor = models.ForeignKey(
@@ -146,8 +161,9 @@ class TranscriptionText(models.Model):
             on_delete=models.SET_NULL,
             )
 
-    def to_markdown(self):
-        return markdown(self.transcription_text)
+
+    class Meta:
+        get_latest_by = ['-updated_date']
 
     def __str__(self):
         return self.transcription_text
