@@ -1,3 +1,5 @@
+from transcriptions import amazon
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -7,7 +9,12 @@ from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
-from .models import Transcription, TranscriptionText, Project
+from .models import (
+        Transcription,
+        TranscriptionText,
+        Project,
+        ProjectsFollowing,
+        )
 from .forms import TranscriptionAddForm, ProjectAddForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
@@ -24,6 +31,10 @@ class HomePageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            followed_projects = ProjectsFollowing.objects.filter(user=self.request.user).all()
+            context['followed_projects'] = followed_projects
+            
         context['latest_transcriptions'] = Transcription.objects.all()[:5]
         context['latest_projects'] = Project.objects.all()[:5]
         return context
@@ -32,12 +43,14 @@ class TranscriptionDetailView(DetailView):
     model = Transcription
     template_name = 'transcriptions/detail.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['version_count'] = TranscriptionText.objects.filter(
-                transcription=context['transcription'],
-                ).count()
-        return context
+    def get_object(self):
+        obj = super().get_object()
+
+        if obj.status == 'in_progress':
+            print(obj.update_transcription_status())
+
+        return obj
+
 
 class TranscriptionUpdateView(UpdateView):
     model = Transcription
@@ -56,6 +69,7 @@ class TranscriptionUpdateView(UpdateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('transcription_detail',
                 kwargs={'pk':self.object.pk})
+
 
 class TranscriptionCreateView(LoginRequiredMixin, CreateView):
     model = Transcription

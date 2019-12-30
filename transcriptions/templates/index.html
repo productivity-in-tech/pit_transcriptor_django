@@ -1,10 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
   <section class="section">
+  {% if user.is_authenticated %}
+  <h1 class="title is-3">New Transcriptions from Projects You're Following</h1>
+  {% for project in projects_following %}
+  <div>
+    {{project}}
+  </div>
+  {% endfor %}
+  {% else %}
     <div class="container box">
       <h2 class="subtitle is-2"> Create and manage your transcriptions for Free - 
         <a href="/transcription/create" class="has-text-grey">Get Started Now!</a></h2>
     </div>
+  {% endif %}
   </section>
   <section class="section">
     <div class="container">

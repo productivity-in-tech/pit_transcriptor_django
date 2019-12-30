@@ -1,0 +1,17 @@
+{{username}}, 
+
+<h1>Welcome to PIT Transcriptor.</h1> 
+
+<div> 
+  <p>If you requested an account, click here to confirm your email address.</p>
+</div>
+
+<div>
+  <p>If you didn't send sign up for an account, That's okay, we'd love for you
+  to check out this project. But you can just ignore this and your account will
+  never be activated</p>
+  
+</div>
+
+
+

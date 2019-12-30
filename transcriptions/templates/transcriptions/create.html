@@ -1,19 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
 <section class="section">
-  <div class="container">
+  <div class="container box">
       <h1 class="title">New Transcription</h1>
+      <p>A transcription is text to go along with an audio file!</p> 
+      <p>Many transcriptions belong in a collection called a Project.
+      <a href="/project/create">Create a New Project!</a>
     </div>
-    <div>
+    <div class="container">
+      <div class="box">
       <form method="POST" enctype="multipart/form-data" class="post-transcription">
         {% csrf_token %}
-        {{form.as_p}}
-        <button type="submit" class="save button is-link">Upload File and
-          Begin Transcription</button>
-
-        {{file}}
+                {{form.as_p}}
+        <div class="field">
+          <div class="control">
+            <button type="submit" class="save button is-link">Upload File</button>
+          </div>
+        </div>
       </form>
     </div>
     </div>
+    <section class="section">
+      <div class="notification">
+        <h2>Don't See Your Project? <a href="/project/create">Create a new one!</a></h2>
+      </div>
+      </section>
 </section>
 {% endblock %}

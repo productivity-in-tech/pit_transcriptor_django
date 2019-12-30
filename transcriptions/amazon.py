@@ -9,15 +9,6 @@ import boto3
 transcribe = boto3.client('transcribe')
 
 
-def upload_audio_file(fileobj, key):
-    storage = boto3.client("s3")
-    bucket = os.environ.get('BUCKET_NAME')
-    return storage.upload_fileobj(
-            fileobj,
-            bucket,
-            key,
-            ExtraArgs={
-                "ACL": "public-read",
-                "ContentType": fileobj.content_type,
-                },
-            )
+def check_transcription(key):
+    return 'Test'
+

@@ -92,7 +92,6 @@ class Transcription(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     language = models.CharField(max_length=250, default='en-US', choices=flags)
 
-
     def start_transcription(self):
         if self.status != 'not_started':
             raise ValueError('Project has already been transcribed')
@@ -121,6 +120,15 @@ class Transcription(models.Model):
                 )
         self.status = 'in_progress'
         return job
+
+    def update_transcription_status(self):
+        job = transcribe.get_transcription_job(
+                TranscriptionJobName=str(self.transcription_key)
+                )
+        self.status = job['TranscriptionJob']['TranscriptionJobStatus']
+        self.save()
+        return self.status
+
 
 
     def __str__(self):
@@ -185,3 +193,7 @@ class AuthorizedProjectEditor(models.Model):
     def __str__(self):
        return self.user
 
+
+class ProjectsFollowing(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
