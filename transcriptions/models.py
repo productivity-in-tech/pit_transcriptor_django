@@ -139,6 +139,14 @@ class TranscriptionText(models.Model):
             null=True,
             on_delete=models.SET_NULL,
             )
+    status = models.CharField(
+            max_length = 250,
+            choices=[
+                ('approved', 'Approved'),
+                ('denied', 'Denied'),
+                ('pending', 'Pending'),
+                ],
+            )
 
 
     class Meta:

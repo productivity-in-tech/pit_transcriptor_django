@@ -15,7 +15,6 @@ from transcriptions.models import Transcription
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
-    template_name = 'projects/create.html'
     fields = [
             'name',
             'url',
@@ -34,7 +33,6 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
 
 class ProjectDetailView(DetailView):
     model = Project
-    template_name = "detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,7 +44,6 @@ class ProjectDetailView(DetailView):
 class ProjectListView(ListView):
     model = Project
     paginate_by = 10
-    template_name = "projects/list.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

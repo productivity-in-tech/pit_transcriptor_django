@@ -36,6 +36,8 @@
           {% for transcription in latest_transcriptions %}
           <div>
             <a href="/transcription/detail/{{transcription.pk}}">{{ transcription }}</a>
+            <a class="tag is-link is-light"
+               href="project/detail/{{transcription.project.pk}}">{{transcription.project}}</a>
           </div>
             {% endfor %}
         </div>

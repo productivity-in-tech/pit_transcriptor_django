@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+  {% block styler%}
+  .transcription-text-form .control textarea {
+    width: 100%;
+    height: 600em;
+    } 
+
+  {% endblock %}
+ {% block content%}
+ <section class="section">
+   <div class="container">
+     <h2 class="title is-2">Edit
+       Transcription: <span class="has-text-weight-light">{{transcription}}</span></h2>
+   </div>
+ </section>
+
+ <section class="section">
+   <div class="container">
+    <form class="transcription-text-form">
+      {% csrf_token %}
+      <div class="field is-fullwidth">
+        <div class="control">
+      {{form.transcription_text}}
+        </div>
+      </div>
+      <button class="button is-success" type="submit">Submit Changes</button>
+    </form>
+   </div>
+ </section>
+ {% endblock %}

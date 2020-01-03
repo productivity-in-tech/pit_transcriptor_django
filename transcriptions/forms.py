@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Transcription, Project
+from .models import Transcription, TranscriptionText
 
 class TranscriptionAddForm(forms.ModelForm):
     file = forms.FileField()
@@ -9,8 +9,9 @@ class TranscriptionAddForm(forms.ModelForm):
         model = Transcription
         fields = ('name', 'url', 'transcription_item_publish_date', 'project')
 
-class ProjectAddForm(forms.ModelForm):
 
+class TranscriptionTextAddFOrm(forms.ModelForm):
+    
     class Meta:
-        model = Project
-        fields = ('name', 'url')
+        model = TranscriptionText
+        fields = ('transcription_text')

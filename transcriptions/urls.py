@@ -21,4 +21,8 @@ urlpatterns = [
             'start/<int:pk>',
             views.start_transcription,
             name='start_transcription'),
+        path(
+            '<int:transcription_pk>/update-text/',
+            views.TranscriptionTextCreateView.as_view(),
+            name='transcriptiontext_create'),
         ]

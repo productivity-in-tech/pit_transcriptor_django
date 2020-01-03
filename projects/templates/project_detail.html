@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="hero box">
+  {% if object.owner == user %}
+  <h1 class="title is-3">{{object.name}} <a class="title is-5 has-text-link">(Edit)</a></h1>
+  {% else %}
+  <h1 class="title">{{object.name}}
+    {% if user != object.owner %}
+    <a class="button is-link is-outlined" href="/projects/follow/{{object.pk}}">Follow</a>
+    {% endif %}
+    </h1>
+
+  {% endif %}
+  <p><a href="{{object.url}}">Visit Website</a></p>
+  {% if object.owner == user %}
+  <p>Maintained by: <a href="/accounts/profile/{{object.owner.pk}}">You</a></p>
+  {% else %}
+  <p>Maintained by: <a href="/projects?by_user={{object.owner.pk}}">{{object.owner}}</a></p>
+    {% endif %}
+    <p><a href="#">{{object.owner.name}}</a></p>
+  </div>
+
+  <h1 class="subtitle is-3">Transcriptions
+  {% if object.owner == user %}
+  <a class="has-text-link is-size-5" href="/transcription/create">Add New Transcription</a>
+  {% endif %}
+  </h1>
+
+  {% for transcription in transcriptions %}
+    <p>
+    <h2><a
+          href="/transcription/detail/{{transcription.pk}}">{{transcription.name}}</a></h2>
+    </p>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}
