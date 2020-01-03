@@ -7,9 +7,9 @@ from pathlib import Path
 import logging
 from urllib.parse import urlsplit, urljoin
 
-from markdown import markdown
 import uuid
-from .amazon import transcribe
+from . import amazon
+from projects.models import Project
 
 # Create your models here.
 UserModel = get_user_model()
@@ -34,30 +34,6 @@ flags = [
         ]
 
     
-class Project(models.Model):
-    """
-    Project Containing Transcriptions
-    Project Owners Can View, Edit (without approval), and Delete
-    Project Visitors Can View, Request Changes
-    """
-    name = models.CharField(max_length=255, unique=True, null=False)
-    owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
-    url = models.URLField(unique=True)
-    can_edit = models.CharField(
-            max_length=250,
-            default='edit',
-            choices=[
-                ('edit', 'Edit Without Request'),
-                ('request','Request Changes'),
-                ('disabled', 'Cannot Edit'),
-                ],
-            )
-    is_premium = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.name
-
-
 class Transcription(models.Model):
     """Individual Transcriptions"""
     audio_file = models.FileField(null=True)
@@ -93,9 +69,6 @@ class Transcription(models.Model):
     language = models.CharField(max_length=250, default='en-US', choices=flags)
 
     def start_transcription(self):
-        if self.status != 'not_started':
-            raise ValueError('Project has already been transcribed')
-
         _settings = {
                 "ShowAlternatives": self.settings_show_alternatives,
                 "MaxAlternatives": self.settings_max_alternatives,
@@ -111,35 +84,41 @@ class Transcription(models.Model):
         media_file_uri = urlsplit(self.audio_file.url,
             allow_fragments=False)._replace(query=None).geturl()
         logging.warning(f'{media_file_uri=}')
-        job = transcribe.start_transcription_job(
+        job = amazon.transcribe.start_transcription_job(
                 TranscriptionJobName=str(self.transcription_key),
                 Media={"MediaFileUri": media_file_uri},
                 MediaFormat=Path(self.audio_file.name).suffix.lstrip('.'),
                 LanguageCode=self.language,
                 Settings=_settings,
                 )
-        self.status = 'in_progress'
         return job
 
-    def update_transcription_status(self):
-        job = transcribe.get_transcription_job(
+    @property
+    def job(self):
+        return amazon.transcribe.get_transcription_job(
                 TranscriptionJobName=str(self.transcription_key)
                 )
-        self.status = job['TranscriptionJob']['TranscriptionJobStatus']
-        self.save()
-        return self.status
+
+    def update_transcription_status(self):
+        status = self.job['TranscriptionJob']['TranscriptionJobStatus'].lower()
+        return status
 
     def build_amazon_speaker_transcription(self):
-        json_file = amazon.get_transcription(str(transcription_key)) # returns the Output.json file generated from amazon
+        json_file = amazon.get_transcription(self.job)# returns the Output.json file generated from amazon
         speaker_pairs = amazon.build_speaker_pairs(json_file) # makes speaker/transcript pairs
-        return '\n\n'.join(list.map(amazon.build_text, speaker_pairs)) # the thing that expands the zip files
+        transcription_list = list(map(amazon.build_text, speaker_pairs)) # the thing that expands the zip files
+        transcription_text = '\n\n\n'.join(transcription_list)
+        print(transcription_text)
+        return transcription_text
 
     @property
     def latest_transcription(self):
+
         try:
-            return self.TranscribedTexts.latest()
+            return self.TranscribedTexts.latest().transcription_text
+
         except:
-            return 'No Transcription Has Been Created Yet'
+            pass
 
 
     def __str__(self):
@@ -176,11 +155,6 @@ class BaseSpeaker(models.Model):
            ) 
 
 
-class DefaultSpeakers(BaseSpeaker):
-    """Default Speakers save a step in defining the speakers in a project"""
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-
-
 class TranscriptionSpeaker(BaseSpeaker):
     transcription = models.ForeignKey(Transcription, on_delete=models.CASCADE)
 
@@ -195,21 +169,3 @@ class AuthorizedTranscriptionEditor(models.Model):
 
     def __str__(self):
        return self.user
-
-
-class AuthorizedProjectEditor(models.Model):
-    """List of authorized editors at the project level. Access at this level
-    overrides TranscriptionOnly Listings is used by owners to grant access to
-    edit any transcription in a project without the owner having to
-    review the changes"""
-
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
-
-    def __str__(self):
-       return self.user
-
-
-class ProjectsFollowing(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)

@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block styler %}
+.transcription-detail h2 {padding: 1em 0; font-weight:bold;}
+{% endblock %}
+
  {% block content%}
 
  <section class="section">
@@ -12,14 +16,14 @@
       <p>{{object.url}}</p>
       <p>Maintained By: {{object.owner}}</p>
       <p>Transcriptions Created: {{object.created_by}}</p>
-      <p>Status: {{object.status}}</p>
+      <p>Status: <strong class="is-capitalized">{{object.status}}</strong></p>
       <a href="" class="button is-warning is-small">Edit Transcription Settings</a>
   </div>
 
-{% if object.status == 'not_started' %}
   <section class="section">
+ <h1 class="title is-5"> Transcription Text</h1>
+{% if object.status == 'not_started' %}
    <div class="box has-background-light">
-       <div class="container">
          <p class="">The audio file has been uploaded, but no transcription
          exists</p>
          <form action="{% url 'start_transcription' pk=object.pk %}", method="POST">
@@ -29,7 +33,19 @@
        </div>
      </div>
    </section>
-{% endif %}
 
-  </section>
+ {% elif object.status == 'completed' %}
+   <div class="box transcription-detail has-background-light">
+          {% if object.status == 'completed' %}
+          {% load markup_tags %}
+            {{object.latest_transcription|apply_markup:"markdown"}} 
+
+           {% else %}
+           <p class="has-text-danger has-text-weight-bold">There is currently No
+           Transcription Loaded</p>
+         {% endif %}
+     </div>
+
+     {% endif %}
+
  {% endblock %}

@@ -3,8 +3,11 @@ This is the Amazon S3 information from the project.
 Any sensitive data is stored in the environment variables and not in this file.
 """
 import os
+import datetime
+import logging
 
 import boto3
+import requests
 
 transcribe = boto3.client('transcribe')
 
@@ -29,18 +32,10 @@ def build_text(transcript_pair):
     start_time = str(datetime.timedelta(seconds=round(float(transcript_data['start_time']))))
     content = transcript_data['alternatives'][0]['transcript']
     # Now sew it all together
-    return f'{speaker} {start_time}\n{content}'
+    return f'## {speaker} {start_time}\n\n\n{content}'
 
-def build_speaker_transcript(transcript_json):
+
+def build_speaker_pairs(transcript_json):
     speaker_labels = transcript_json['results']['speaker_labels']['segments']
     speakers = [x['speaker_label'].replace('spk', 'Speaker') for x in speaker_labels]
     return list(zip(speakers, transcript_json['results']['segments']))
-
-
-def format_speaker_transcription(job):
-    transcript_json = get_transcription(job)
-    transcription_data = build_speaker_transcript(transcript_json)
-    return '\n\n'.join(
-            list(map(build_text, transcription_data))
-            )
-

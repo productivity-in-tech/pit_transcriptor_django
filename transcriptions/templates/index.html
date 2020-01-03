@@ -2,6 +2,19 @@
 {% block content %}
   <section class="section">
   {% if user.is_authenticated %}
+  <div class="level">
+    <div class="level-item">
+      <a class="button is-info is-outlined is-large" href="transcription/create">Create New Transcription</a>
+    </div>
+    <div class="level-item">
+      <a class="button is-link is-outlined is-large"
+        href="project/create">Create New Project</a>
+    </div>
+    <div class="level-item">
+      <a class="button is-warning is-small"
+        href="transcription/create">Manage Existing Jobs</a>
+    </div>
+  </div>
   <h1 class="title is-3">New Transcriptions from Projects You're Following</h1>
   {% for project in projects_following %}
   <div>

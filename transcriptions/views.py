@@ -1,5 +1,3 @@
-from transcriptions import amazon
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -12,6 +10,8 @@ from django.shortcuts import render, redirect
 from .models import (
         Transcription,
         TranscriptionText,
+        )
+from projects.models import (
         Project,
         ProjectsFollowing,
         )
@@ -26,35 +26,31 @@ def transcription_list(request):
     return render(request, 'transcriptions/transcription_list.html',
             {'transcriptions': transcriptions})
 
-class HomePageView(TemplateView):
-    template_name = "index.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.user.is_authenticated:
-            followed_projects = ProjectsFollowing.objects.filter(user=self.request.user).all()
-            context['followed_projects'] = followed_projects
-            
-        context['latest_transcriptions'] = Transcription.objects.all()[:5]
-        context['latest_projects'] = Project.objects.all()[:5]
-        return context
-
 class TranscriptionDetailView(DetailView):
     model = Transcription
     template_name = 'transcriptions/detail.html'
 
     def get_object(self):
-        obj = super().get_object()
+        pk = self.kwargs['pk']
+        obj = Transcription.objects.filter(pk=pk).first()
+        status = obj.status
 
-        if obj.status == 'in_progress':
-            if obj.update_transcription_status() == 'completed':
-                new_text = TranscriptionText.create()
-                new_text.transcription = object
-                new_text.transcription_text = object.build_amazon_speaker_transcription()
-                new_text.save()
+        if status not in ['completed', 'not_started']:
+            new_status = obj.update_transcription_status()
+            Transcription.objects.filter(pk=pk).update(status=new_status)
+
+
+        if obj.latest_transcription == None and obj.status == 'completed':
+            transcription_text = obj.build_amazon_speaker_transcription()
+            TranscriptionText.objects.get_or_create(
+                transcription = obj,
+                transcription_text=transcription_text,
+                )
+
+        obj = Transcription.objects.get(pk=pk)
 
         return obj
-                
+
 
 class TranscriptionUpdateView(UpdateView):
     model = Transcription
@@ -95,57 +91,8 @@ class TranscriptionCreateView(LoginRequiredMixin, CreateView):
 
 @require_http_methods(["POST"])
 def start_transcription(request, pk):
-    transcription = Transcription.objects.get(pk=pk)
-    transcription.start_transcription()
-    transcription.status = 'in_progress'
+    Transcription.objects.get(pk=pk).start_transcription()
+    Transcription.objects.filter(pk=pk).update(status='in_progress')
     return redirect('transcription_detail', pk=pk)
 
 
-class ProjectCreateView(LoginRequiredMixin, CreateView):
-    model = Project
-    template_name = 'projects/create.html'
-    fields = [
-            'name',
-            'url',
-            'can_edit',
-            ]
-    success_url = reverse_lazy('project_detail')
-
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
-
-    def get_success_url(self, **kwargs):
-        return reverse_lazy('project_detail',
-                kwargs={'pk':self.object.pk})
-
-
-class ProjectDetailView(DetailView):
-    model = Project
-    template_name = "projects/detail.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['transcriptions'] = Transcription.objects.filter(
-                project=context['object']) 
-        return context
-
-
-class ProjectListView(ListView):
-    model = Project
-    paginate_by = 10
-    template_name = "projects/list.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if user_id := self.request.GET.get('by_user'):
-            context['owner'] = User.objects.get(pk=user_id)
-        return context
-
-    def get_queryset(self):
-        if self.request.GET.get('by_user'):
-            filter_user = self.request.GET.get('by_user')
-            return Project.objects.filter(owner=filter_user)
-
-        else:
-            return Project.objects.all() 
