@@ -57,6 +57,7 @@ class Transcription(models.Model):
             validators=[MinValueValidator(0), MaxValueValidator(10)],
             )
     transcription_item_publish_date = models.DateField(blank=True)
+    transcription_text = models.TextField(blank=True)
     project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.SET_NULL)
     owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
     status = models.CharField(
@@ -100,60 +101,18 @@ class Transcription(models.Model):
                 )
 
     def update_transcription_status(self):
-        status = self.job['TranscriptionJob']['TranscriptionJobStatus'].lower()
-        return status
+        return self.job['TranscriptionJob']['TranscriptionJobStatus'].lower()
 
     def build_amazon_speaker_transcription(self):
         json_file = amazon.get_transcription(self.job)# returns the Output.json file generated from amazon
         speaker_pairs = amazon.build_speaker_pairs(json_file) # makes speaker/transcript pairs
         transcription_list = list(map(amazon.build_text, speaker_pairs)) # the thing that expands the zip files
         transcription_text = '\n\n\n'.join(transcription_list)
-        print(transcription_text)
         return transcription_text
-
-    @property
-    def latest_transcription(self):
-
-        try:
-            return self.TranscribedTexts.latest().transcription_text
-
-        except:
-            pass
 
 
     def __str__(self):
         return self.name
-
-
-class TranscriptionText(models.Model):
-    transcription = models.ForeignKey(
-            Transcription,
-            on_delete=models.CASCADE,
-            related_name='TranscribedTexts',
-            )
-    updated_date = models.DateTimeField(default=timezone.now)
-    transcription_text = models.TextField()
-    editor = models.ForeignKey(
-            UserModel,
-            blank=True,
-            null=True,
-            on_delete=models.SET_NULL,
-            )
-    status = models.CharField(
-            max_length = 250,
-            choices=[
-                ('approved', 'Approved'),
-                ('denied', 'Denied'),
-                ('pending', 'Pending'),
-                ],
-            )
-
-
-    class Meta:
-        get_latest_by = ['-updated_date']
-
-    def __str__(self):
-        return self.transcription_text
 
 
 class BaseSpeaker(models.Model):

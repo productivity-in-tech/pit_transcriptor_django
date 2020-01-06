@@ -9,11 +9,9 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
 from .models import (
         Transcription,
-        TranscriptionText,
         )
 from projects.models import (
         Project,
-        ProjectsFollowing,
         )
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
@@ -31,21 +29,16 @@ class TranscriptionDetailView(DetailView):
 
     def get_object(self):
         pk = self.kwargs['pk']
-        obj = Transcription.objects.filter(pk=pk).first()
+        obj = Transcription.objects.get(pk=pk)
         status = obj.status
-        print(obj.latest_transcription == None)
 
-        if status.lower() not in ['completed', 'not_started']:
-            new_status = obj.update_transcription_status()
-            Transcription.objects.filter(pk=pk).update(status=new_status)
+        if status.lower() == 'in_progress':
+            status = Transcription.objects.filter(pk=pk).update(status=obj.update_transcription_status())
 
-
-        if obj.latest_transcription == None and obj.status == 'completed':
-            transcription_text = obj.build_amazon_speaker_transcription()
-            TranscriptionText.objects.get_or_create(
-                transcription = obj,
-                transcription_text=transcription_text,
-                )
+            if not obj.transcription_text:
+                Transcription.objects.filter(pk=pk).update(
+                        transcription_text=obj.build_amazon_speaker_transcription())
+                    
 
         obj = Transcription.objects.get(pk=pk)
 
@@ -71,27 +64,13 @@ class TranscriptionUpdateView(UpdateView):
                 kwargs={'pk':self.object.pk})
 
 
-class TranscriptionTextCreateView(LoginRequiredMixin, CreateView):
-    model = TranscriptionText
+class TranscriptionTextUpdateView(LoginRequiredMixin, UpdateView):
+    model = Transcription
     fields = ['transcription_text']
-
-    def form_valid(self, form):
-        form.instance.editor = self.request.user
-        self.instance.transcription = self.request.transcription
-
-        if form.instance.transcription.owner == self.request.user:
-            form.instance.status = 'approved' 
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        transcription_pk = self.kwargs['transcription_pk']
-        context['transcription'] = Transcription.objects.get(pk=transcription_pk)
-        return context
-
 
 
 class TranscriptionCreateView(LoginRequiredMixin, CreateView):
-    model = TranscriptionText
+    model = Transcription
     template_name = 'transcriptions/create.html'
     fields = [
             'name',

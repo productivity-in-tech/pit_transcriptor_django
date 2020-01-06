@@ -38,7 +38,7 @@
    <div class="box transcription-detail has-background-light">
           {% if object.status == 'completed' %}
           {% load markup_tags %}
-            {{object.latest_transcription|apply_markup:"markdown"}} 
+            {{object.transcription_text|apply_markup:"markdown"}} 
 
            {% else %}
            <p class="has-text-danger has-text-weight-bold">There is currently No
