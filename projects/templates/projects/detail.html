@@ -9,7 +9,13 @@
   {% else %}
   <h1 class="title">{{object.name}}
     {% if user != object.owner %}
-    <a class="button is-link is-outlined" href="/projects/follow/{{object.pk}}">Follow</a>
+      {% if following %}
+        <a class="button is-link"
+          href="/project/unfollow/{{object.pk}}">Following</a>
+      {% else %}
+        <a class="button is-link is-outlined"
+          href="/project/follow/{{object.pk}}">Follow</a>
+      {% endif %}
     {% endif %}
     </h1>
 

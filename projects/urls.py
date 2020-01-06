@@ -12,4 +12,12 @@ urlpatterns = [
             'create/',
             views.ProjectCreateView.as_view(),
             name='project_create'),
+        path(
+            'follow/<int:pk>',
+            views.follow_project,
+            name='project_follow'),
+        path(
+            'unfollow/<int:pk>',
+            views.unfollow_project,
+            name='project_unfollow'),
         ]

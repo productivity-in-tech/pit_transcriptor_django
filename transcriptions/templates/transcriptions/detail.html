@@ -21,7 +21,9 @@
   </div>
 
   <section class="section">
- <h1 class="title is-5"> Transcription Text</h1>
+    <h1 class="title is-5"> Transcription Text <a class="tag is-light
+                                                  has-text-link"
+                                                  href="/transcription/update-text/{{object.pk}}">Edit</a></h1>
 {% if object.status == 'not_started' %}
    <div class="box has-background-light">
          <p class="">The audio file has been uploaded, but no transcription

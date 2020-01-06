@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+ 
+{% block styler %}
+textarea {
+  width: 80%;
+  padding: 1em 0; font-size:1em;}
+{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 class="title is-4 is-primary">Edit Transcription Text</h1>
+    <h1 class="title is-2">{{object.name}}</h1>
+    <h2 class="subtitle is-5"><a
+        href="/transcription/update/{{object.pk}}">Edit Transcription Details</a></h2>
+  </div>
+</section>
+<section class="section">
+  <div class="container">
+    <form method="POST">
+      {% csrf_token %}
+      <div>
+      <a href="transcription/update-speakers/{{object.pk}}">Edit Speakers</a>
+      </div>
+
+      {{form.transcriptions_text.label}}
+      {{form.transcription_text}}
+      <div class="field">
+        <div class="control">
+        <input type="submit" class="button is-success">
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h1 class="subtitle">Bulk Find/Replace</h1>
+    <form class="form" action="/transcription/bulk-replace/{{object.pk}}" method="POST">
+      {% csrf_token %}
+  <div class="field">
+    <div class="control">
+      <input class="input" name="search-for" id="search-for" placeholder="Search For">
+    </div>
+  </div>
+  <div class="field">
+    <div class="control">
+      <input class="input" name="replace-with" id="replace-with" placeholder="Replace With">
+    </div>
+  </div>
+      <div class="field">
+        <div class="control">
+          <input type="submit" class="button is-warning" value="Bulk Replace">
+        </div>
+      </div>
+</form>
+  </div>
+</section>
+{% endblock %}

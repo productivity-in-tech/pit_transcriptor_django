@@ -1,3 +1,4 @@
+import re 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -44,8 +45,12 @@ class TranscriptionDetailView(DetailView):
 
         return obj
 
+class TranscriptionTextUpdateView(LoginRequiredMixin, UpdateView):
+    model = Transcription
+    template_name = 'transcriptions/update-text.html'
+    fields = ['transcription_text']
 
-class TranscriptionUpdateView(UpdateView):
+class TranscriptionUpdateView(LoginRequiredMixin, UpdateView):
     model = Transcription
     template_name = 'transcriptions/update.html'
     fields = [
@@ -61,12 +66,19 @@ class TranscriptionUpdateView(UpdateView):
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('transcription_detail',
-                kwargs={'pk':self.object.pk})
+                kwargs={'pk': self.object.pk})
 
 
 class TranscriptionTextUpdateView(LoginRequiredMixin, UpdateView):
     model = Transcription
     fields = ['transcription_text']
+    template_name = 'transcriptions/update-text.html'
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy(
+            'transcription_detail',
+            kwargs={'pk': self.object.pk},
+            )
 
 
 class TranscriptionCreateView(LoginRequiredMixin, CreateView):
@@ -80,12 +92,28 @@ class TranscriptionCreateView(LoginRequiredMixin, CreateView):
             'language',
             'transcription_item_publish_date',
             ]
-    success_url = reverse_lazy('home')
 
+    def get_success_url(self, **kwargs):
+        return reverse_lazy(
+            'transcription_detail',
+            kwargs={'pk': self.object.pk},
+            )
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
+
+@require_http_methods(["POST"])
+def bulk_replace(request, pk):
+    starting_text = Transcription.objects.get(pk=pk).transcription_text
+    new_text = re.sub(
+            request.POST['search-for'],
+            request.POST['replace-with'],
+            starting_text,
+            re.IGNORECASE,
+            )
+    Transcription.objects.filter(pk=pk).update(transcription_text=new_text)
+    return redirect('transcription_detail', pk=pk)
 
 
 @require_http_methods(["POST"])
@@ -93,5 +121,3 @@ def start_transcription(request, pk):
     Transcription.objects.get(pk=pk).start_transcription()
     Transcription.objects.filter(pk=pk).update(status='in_progress')
     return redirect('transcription_detail', pk=pk)
-
-

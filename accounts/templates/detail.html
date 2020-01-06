@@ -5,29 +5,29 @@
   <div class="container box">
     <h1 class="title is-3">Account Details: {{object.username}}</h1>
   </div>
-  <div class="container"> 
+  <div class="container box"> 
     <div class="columns">
-  <div class="column is-one-third ">
-    <h1 class="subtitle is-4">Latest Transcriptions</h1>
+  <div class="column is-one-half">
+    <h1 class="subtitle is-4">Latest Transcriptions <span class="subtitle
+    is-5"><a href="transcriptions/create/">New Transcription</a></span></h1>
+    <hr>
     {% for transcription in transcriptions %}
     <div>
-      {{transcription}}
+      <a href="transcription/detail/{{transcription.pk}}">{{transcription}}</a>
     </div>
     {% endfor %}
   </div>
-  <div class="column is-one-third is-offset-one-quarter">
-    <h1 class="subtitle is-4">Projects</h1>
+  <div class="column is-one-half">
+    <h1 class="subtitle is-4">Projects <span class="subtitle is-5"><a
+                                             href="project/create/">New
+                                             Project</a></span></h1>
 
+    <hr>
     {% for project in projects %}
     <div>
       <a href="/project/detail/{{project.pk}}">{{project}}</a>
     </div>
     {% endfor %}
-    {% if user == object %}
-    <div>
-      <a class="button is-success" href="/project/create">Create New Project</a>
-    </div>
-    {% endif %}
   </div>
   </div> 
   </div>
