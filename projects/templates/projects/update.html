@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section class="section">
+    <div>
+      <h2 class="title">Update: <span class="subtitle is-3">{{object.name}}</span></h2>
+    </div>
+  </section>
+  <section class="section">
+    <div class="box container">
+      <form method="POST" class="post-project">
+            {% csrf_token %}
+            {{form.as_div}}
+        <div class="field">
+          <div class="control">
+            <input type="submit" class="button is-link" value="Update Project">
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+{% endblock %}

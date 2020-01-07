@@ -17,7 +17,7 @@
       <p>Maintained By: {{object.owner}}</p>
       <p>Transcriptions Created: {{object.created_by}}</p>
       <p>Status: <strong class="is-capitalized">{{object.status}}</strong></p>
-      <a href="" class="button is-warning is-small">Edit Transcription Settings</a>
+      <a href="{% url 'transcription_update' transcription.pk %}" class="button is-warning is-small">Edit Transcription Settings</a>
   </div>
 
   <section class="section">

@@ -59,12 +59,8 @@ class TranscriptionUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'transcriptions/update.html'
     fields = [
             'name',
-            'audio_file',
             'url',
             'project',
-            'language',
-            'settings_max_alternatives',
-            'settings_max_speaker_labels',
             'transcription_item_publish_date',
             ]
 

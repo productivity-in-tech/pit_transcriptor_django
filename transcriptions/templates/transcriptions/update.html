@@ -2,14 +2,20 @@
 {% block content %}
 <section class="section">
   <div class="container">
-      <h1 class="title">New Transcription</h1>
-    </div>
-    <div>
+    <h1 class="title">Update: <span class="subtitle">{{object.name}}</span></h1>
+  </div>
+</section>
+<section class="section">
+    <div class="container box">
       <form method="POST" enctype="multipart/form-data" class="post-transcription">
         {% csrf_token %}
-        {{form.as_p}}
-        <button type="submit" class="save button is-link">Upload File and
-          Begin Transcription</button>
+        <div class="field">
+          <div class="control">
+            {{form.as_p}}
+          </div>
+        </div>
+        <input type="submit" class="button is-link" value="Upload File and
+        Begin Transcription">
 
         {{file}}
       </form>

@@ -9,6 +9,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
 from .models import Project, ProjectsFollowing
+from .forms import ProjectDetailForm
 
 from transcriptions.models import Transcription
 
@@ -16,10 +17,24 @@ from transcriptions.models import Transcription
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
-    fields = [
-            'name',
-            'url',
-            ]
+    form_class = ProjectDetailForm
+    success_url = reverse_lazy('project_detail')
+    template_name = 'projects/create.html'
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('project_detail',
+                kwargs={'pk':self.object.pk})
+
+
+class ProjectUpdateView(LoginRequiredMixin, UpdateView):
+    model = Project
+    form_class = ProjectDetailForm
+    template_name = 'projects/update.html'
+
     success_url = reverse_lazy('project_detail')
 
     def form_valid(self, form):
