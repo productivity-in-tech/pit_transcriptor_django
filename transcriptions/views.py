@@ -87,16 +87,11 @@ class TranscriptionTextUpdateView(LoginRequiredMixin, UpdateView):
 
 class TranscriptionCreateView(LoginRequiredMixin, CreateView):
     model = Transcription
-    form_class = TranscriptionAddForm
+    
     template_name = 'transcriptions/create.html'
-    fields = [
-            'name',
-            'audio_file',
-            'url',
-            'project',
-            'language',
-            'transcription_item_publish_date',
-            ]
+
+    def get_form(self, **kwargs):
+        return TranscriptionAddForm(request=self.request)
 
     def get_success_url(self, **kwargs):
         return reverse_lazy(
