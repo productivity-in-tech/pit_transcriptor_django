@@ -34,9 +34,11 @@ class TranscriptionDetailView(DetailView):
         status = obj.status
 
         if status.lower() == 'in_progress':
-            status = Transcription.objects.filter(pk=pk).update(status=obj.update_transcription_status())
+            Transcription.objects.filter(pk=pk).update(
+                    status=obj.update_transcription_status().lower())
 
-            if not obj.transcription_text:
+            obj = Transcription.objects.get(pk=pk)
+            if not obj.transcription_text and obj.status == 'complete':
                 Transcription.objects.filter(pk=pk).update(
                         transcription_text=obj.build_amazon_speaker_transcription())
                     

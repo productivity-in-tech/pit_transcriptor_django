@@ -58,7 +58,7 @@ class Transcription(models.Model):
             )
     transcription_item_publish_date = models.DateField(blank=True)
     transcription_text = models.TextField(blank=True)
-    project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.SET_NULL)
+    project = models.ForeignKey(Project, blank=True, null=True, on_delete=models.SET_NULL)
     owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
     status = models.CharField(
             max_length=128,
@@ -113,26 +113,3 @@ class Transcription(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class BaseSpeaker(models.Model):
-    speaker_name = models.CharField(max_length=255)
-    speaker_label = models.IntegerField(
-            validators=[MinValueValidator(1), MaxValueValidator(10)],
-           ) 
-
-
-class TranscriptionSpeaker(BaseSpeaker):
-    transcription = models.ForeignKey(Transcription, on_delete=models.CASCADE)
-
-
-class AuthorizedTranscriptionEditor(models.Model):
-    """List of authorized editors at the project or transcription level. This
-    is used by owners to grant access to edit a transcription without the owner having to
-    review the changes"""
-
-    transcription = models.ForeignKey(Transcription, on_delete=models.CASCADE)
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
-
-    def __str__(self):
-       return self.user
