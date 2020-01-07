@@ -34,11 +34,12 @@ class TranscriptionDetailView(DetailView):
         status = obj.status
 
         if status.lower() == 'in_progress':
+            print(status)
             Transcription.objects.filter(pk=pk).update(
                     status=obj.update_transcription_status().lower())
 
             obj = Transcription.objects.get(pk=pk)
-            if not obj.transcription_text and obj.status == 'complete':
+            if not obj.transcription_text and obj.status == 'completed':
                 Transcription.objects.filter(pk=pk).update(
                         transcription_text=obj.build_amazon_speaker_transcription())
                     
@@ -112,7 +113,7 @@ def bulk_replace(request, pk):
             request.POST['search-for'],
             request.POST['replace-with'],
             starting_text,
-            re.IGNORECASE,
+            flags=re.IGNORECASE,
             )
     Transcription.objects.filter(pk=pk).update(transcription_text=new_text)
     return redirect('transcription_detail', pk=pk)

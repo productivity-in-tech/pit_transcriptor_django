@@ -36,6 +36,13 @@
      </div>
    </section>
 
+{% elif object.status == 'in_progress' %}
+  <div class="box">
+    <h1 class="subtitle is-5">Your Transcription is Processing</h1>
+    <p>Transcriptions take time, in the future, we will email you when it's
+    done. Until then, enjoy these kittys!</p>
+    <div style="width:100%;height:0;padding-bottom:56%;position:relative;"><iframe src="https://giphy.com/embed/Ov5NiLVXT8JEc" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div><p><a href="https://giphy.com/gifs/cats-light-sabers-Ov5NiLVXT8JEc">via GIPHY</a></p>
+
  {% elif object.status == 'completed' %}
    <div class="box transcription-detail has-background-light">
           {% if object.status == 'completed' %}

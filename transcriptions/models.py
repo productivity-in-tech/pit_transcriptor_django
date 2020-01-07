@@ -11,8 +11,7 @@ import uuid
 from . import amazon
 from projects.models import Project
 
-# Create your models here.
-UserModel = get_user_model()
+# Create your models here.  UserModel = get_user_model()
 
 flags = [
         ('en-US', 'US English'),
@@ -32,6 +31,8 @@ flags = [
         ('ru-RU', 'Russian'),
         ('zh-CN', 'Mandarin Chinese'),
         ]
+
+UserModel = get_user_model()
 
     
 class Transcription(models.Model):
@@ -93,6 +94,9 @@ class Transcription(models.Model):
                 Settings=_settings,
                 )
         return job
+
+    class Meta:
+        ordering = ['created_date', '-transcription_item_publish_date']
 
     @property
     def job(self):

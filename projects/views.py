@@ -40,7 +40,10 @@ class ProjectDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['transcriptions'] = Transcription.objects.filter(
                 project=context['object']) 
-        context['following'] = ProjectsFollowing.objects.filter(user=self.request.user)
+        context['following'] = ProjectsFollowing.objects.filter(
+                project=self.kwargs.get('pk'),
+                user=self.request.user,
+                )
         return context
 
 
