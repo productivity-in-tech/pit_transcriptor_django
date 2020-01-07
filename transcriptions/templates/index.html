@@ -24,7 +24,7 @@
   <div class="columns">
     <div class="column is-narrow">
       <a class="subtitle has-text-link"
-         href="{% url 'transcription_detail' {{followed_transcription.pk}}">{{followed_transcription}}</a>
+         href="{% url 'transcription_detail' followed_transcription.pk %}">{{followed_transcription}}</a>
     </div>
       <div class="column is-1"><a
       href="{% url 'project_detail' followed_transcription.project.pk %}" class="tag
