@@ -9,11 +9,11 @@
     <div class="columns">
   <div class="column is-one-half">
     <h1 class="subtitle is-4">Latest Transcriptions <span class="subtitle
-    is-5"><a href="transcriptions/create/">New Transcription</a></span></h1>
+    is-5"><a href="{% url 'transcription_create' %}">New Transcription</a></span></h1>
     <hr>
     {% for transcription in transcriptions %}
     <div>
-      <a href="transcription/detail/{{transcription.pk}}">{{transcription}}</a>
+      <a href="{% url 'transcription_detail' transcription.pk}}">{{transcription}}</a>
     </div>
     {% endfor %}
   </div>
@@ -25,11 +25,25 @@
     <hr>
     {% for project in projects %}
     <div>
-      <a href="/project/detail/{{project.pk}}">{{project}}</a>
+      <a href="{% url 'project_detail' project.pk %}">{{project}}</a>
     </div>
     {% endfor %}
   </div>
   </div> 
   </div>
 </section>
+<sections class="section">
+<div class="box container">
+  <h1 class="subtitle">Projects Following</h1>
+
+  {% for followed_project in following %}
+    <div>
+      <a href="{% url 'project_detail' followed_project.project.pk %}">
+        {{followed_project.project.name}}
+      </a>
+    </div>
+  {% endfor %}
+</div>
+  </section>
+
 {% endblock %}

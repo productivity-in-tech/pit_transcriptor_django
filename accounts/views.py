@@ -6,7 +6,7 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from transcriptions.models import Transcription
-from projects.models import Project
+from projects.models import Project, ProjectsFollowing
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
@@ -57,5 +57,7 @@ class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['projects'] = Project.objects.filter(owner=self.request.user) 
         context['transcriptions'] = Transcription.objects.filter(owner=self.request.user)
+        context['following'] = ProjectsFollowing.objects.filter(
+                user=self.request.user, 
+                )
         return context
-

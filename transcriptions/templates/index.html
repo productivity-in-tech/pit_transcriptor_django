@@ -5,6 +5,9 @@
   <div class="container">
     <div class="columns">
       <div class="column is-narrow">
+        <h1 class="title">Welcome Back, {{user.username}}</h1>
+      </div>
+      <div class="column is-narrow">
         <a class="button is-info is-small" href="{% url 'transcription_create' %}">Create New Transcription</a>
       </div>
       <div class="column is-narrow">
@@ -13,12 +16,14 @@
       </div>
     </div>
   </div>
-  <div class="container">
-  <h1 class="title is-3">New Transcriptions from Projects You're Following</h1>
+  </section>
+  <section class="section">
+  <div class="box container">
+  <h1 class="subtitle is-3">New Transcriptions from Projects You're Following</h1>
   {% for followed_transcription in following_transcriptions %}
   <div class="columns">
     <div class="column is-narrow">
-      <a class="subtitle is-5 has-text-link"
+      <a class="subtitle has-text-link"
        href="/transcription/detail/{{followed_transcription.pk}}">{{followed_transcription}}</a>
     </div>
       <div class="column is-1"><a
