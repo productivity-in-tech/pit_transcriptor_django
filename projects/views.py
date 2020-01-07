@@ -19,7 +19,6 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
     fields = [
             'name',
             'url',
-            'can_edit',
             ]
     success_url = reverse_lazy('project_detail')
 

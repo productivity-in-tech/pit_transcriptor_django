@@ -24,10 +24,10 @@
   <div class="columns">
     <div class="column is-narrow">
       <a class="subtitle has-text-link"
-       href="/transcription/detail/{{followed_transcription.pk}}">{{followed_transcription}}</a>
+         href="{% url 'transcription_detail' {{followed_transcription.pk}}">{{followed_transcription}}</a>
     </div>
       <div class="column is-1"><a
-       href="/project/detail/{{followed_transcription.project.pk}}" class="tag
+      href="{% url 'project_detail' followed_transcription.project.pk %}" class="tag
        is-light">{{followed_transcription.project}}</a></div>
   </div>
   {% endfor %}
@@ -35,25 +35,25 @@
   {% else %}
     <div class="container box">
       <h2 class="subtitle is-2"> Create and manage your transcriptions for Free - 
-        <a href="/transcription/create" class="has-text-grey">Get Started Now!</a></h2>
+        <a href="{% url 'transcription_create' %}" class="has-text-grey">Get Started Now!</a></h2>
     </div>
   {% endif %}
   </section>
   <section class="section">
     <div class="container">
     <div class="columns">
-        <div class="column box is-one-third is-offset-1">
+        <div class="column box is-narrow">
           <h2 class="subtitle">Recent Transcriptions</h2>
           {% for transcription in latest_transcriptions %}
           <div>
-            <a href="/transcription/detail/{{transcription.pk}}">{{ transcription }}</a>
+            <a href="{% url 'transcription_detail' transcription.pk %}">{{ transcription }}</a>
             <a class="tag is-link is-light"
-               href="project/detail/{{transcription.project.pk}}">{{transcription.project}}</a>
+               href="{% url 'project_detail' transcription.project.pk %}">{{transcription.project}}</a>
           </div>
             {% endfor %}
         </div>
 
-        <div class="column box is-one-third is-offset-2">
+        <div class="column box is-expanded is-offset-1">
           <h2 class="subtitle">Recently Updated Projects</h2>
           {% for project in latest_projects %}
           <div>

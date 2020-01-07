@@ -1,0 +1,15 @@
+{% extends 'email_base.html' %}
+{% block content%}
+<h2>{{transcription}} has started</h2>
+
+<p>We've started working on your latest transcription! {{transcription}}</p>
+<p>You will recieve an email once this transcription is done.</p>
+
+<p>Once Complete, you can edit the transcription using the link below</a>
+{% url 'transcription_detail' transcription.pk %}</p>
+
+<h2>Transcriptions can take a while</h2>
+<p>The time it takes for a transcription to finish is based on the length of
+the file.</p>
+
+{% endblock %}

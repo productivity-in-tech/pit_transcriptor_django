@@ -29,15 +29,6 @@ class Project(models.Model):
             related_name='owner',
             )
     url = models.URLField(unique=True)
-    can_edit = models.CharField(
-            max_length=250,
-            default='edit',
-            choices=[
-                ('edit', 'Edit Without Request'),
-                ('request','Request Changes'),
-                ('disabled', 'Cannot Edit'),
-                ],
-            )
 
     def __str__(self):
         return self.name

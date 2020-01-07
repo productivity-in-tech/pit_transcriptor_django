@@ -11,6 +11,7 @@ from django.shortcuts import render, redirect
 from .models import (
         Transcription,
         )
+from .forms import TranscriptionAddForm
 from projects.models import (
         Project,
         )
@@ -86,6 +87,7 @@ class TranscriptionTextUpdateView(LoginRequiredMixin, UpdateView):
 
 class TranscriptionCreateView(LoginRequiredMixin, CreateView):
     model = Transcription
+    form_class = TranscriptionAddForm
     template_name = 'transcriptions/create.html'
     fields = [
             'name',
