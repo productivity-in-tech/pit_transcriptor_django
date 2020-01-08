@@ -20,6 +20,10 @@
         <a class="tag is-info is-light" 
         href="{% url 'project_detail' transcription.project.pk %}">{{transcription.project}}</a>
     </div>
+      <div class="column is-narrow">
+        <a class="tag is-danger" 
+        href="{% url 'transcription_delete' transcription.pk %}">Delete</a>
+    </div>
     </div>
     {% endfor %}
   </div>

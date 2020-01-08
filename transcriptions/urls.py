@@ -26,6 +26,10 @@ urlpatterns = [
             views.TranscriptionTextUpdateView.as_view(),
             name='transcription_update_text'),
         path(
+            'delete/<int:pk>',
+            views.TranscriptionDeleteView.as_view(),
+            name='transcription_delete'),
+        path(
             'bulk-replace/<int:pk>',
             views.bulk_replace,
             name='transcription_bulk_replace_text'),

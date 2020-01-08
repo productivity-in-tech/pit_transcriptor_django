@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     'storages',
     'django_markup',
+    'rest_framework',
 ] 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

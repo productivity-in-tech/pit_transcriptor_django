@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section">
+  <div class="container box">
+  <h1 class="title is-3">Delete: <span class="subtitle
+  is-5">{{object.name}}</span></h1>
+  </div>
+  </section>
+
+<section class="section">
+  <div class="container box">
+  <form method="post">
+    {% csrf_token %}
+    <div class="notification is-warning">
+    <h1 class="subtitle is-4">Are you sure you want to delete "{{ object }}"?</p>
+      <p>This cannot be reversed.</p>
+    </div>
+    <div class="field">
+    <div class="control">
+      <input class="button is-danger" type="submit" value="Delete This
+      Transcription">
+    </div>
+    </div>
+    <div class="field">
+    <div class="control">
+      <a href="{% url 'accounts_detail' user.pk %}" class="button
+      is-primary">Back to My Accounts</a>
+    </div>
+    </div>
+</form>
+  </div>
+  </section>
+
+{% endblock %}

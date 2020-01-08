@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'storages',
     'django_markup',
+    'rest_framework',
 ]
 
 

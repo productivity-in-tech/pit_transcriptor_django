@@ -44,7 +44,7 @@ class Transcription(models.Model):
             null=False,
             default=uuid.uuid4,
             )
-    url = models.URLField()
+    url = models.URLField(blank=True, null=True, unique=True)
     settings_show_alternatives = models.BooleanField(default=True)
     settings_max_alternatives = models.IntegerField(
             blank=True,
@@ -63,8 +63,6 @@ class Transcription(models.Model):
     owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
     status = models.CharField(
             max_length=128,
-            choices=[('not_started', 'NOT STARTED'), ('in_progress', 'IN PROGRESS'), ('failed', 'ERROR'),
-                ('success', 'COMPLETED'), ('pending', 'PENDING_CHANGE')],
             default='not_started',
             )
     created_date = models.DateTimeField(auto_now_add=True)
