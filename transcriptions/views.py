@@ -12,11 +12,6 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, redirect
 
-# REST Framework Modules
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-
 # Local Modules
 from .models import (
         Transcription,
@@ -29,14 +24,6 @@ from projects.models import (
         )
 
 # Create your views here.
-def transcription_list(request):
-    transcriptions = Transcription.objects.all()
-
-    return render(request, 'transcriptions/transcription_list.html',
-            {'transcriptions': transcriptions})
-
-
-class TranscriptionDetailAPIView(APIView)
 
 class TranscriptionDetailView(DetailView):
     model = Transcription

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'api.apps.ApiConfig',
     'transcriptions.apps.TranscriptionsConfig',
     'accounts.apps.AccountsConfig',
     'projects.apps.ProjectsConfig',
