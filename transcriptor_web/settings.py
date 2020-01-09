@@ -23,9 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('APP_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['transcriptor.productivityintech.com']
+
 
 # Application definition
 
@@ -46,7 +47,10 @@ INSTALLED_APPS = [
     'storages',
     'django_markup',
     'rest_framework',
-] 
+    'django_q',
+]
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -128,8 +132,17 @@ EMAIL_HOST=os.environ.get('EMAIL_HOST')
 EMAIL_PORT=os.environ.get('EMAIL_PORT')
 EMAIL_HOST_USER=os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_HOST_USE_SSL=True
 
+
+# DJANGO Q
+Q_CLUSTER = {
+    'save_limit': 250,
+    'queue_limit': 500,
+    'redis': {
+        'host': '127.0.0.1',
+        'port': 6379,
+        'db': 0, }
+}
 
 
 # Internationalization
