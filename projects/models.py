@@ -29,6 +29,7 @@ class Project(models.Model):
             related_name='owner',
             )
     url = models.URLField(unique=True)
+    rss_feed = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.name
