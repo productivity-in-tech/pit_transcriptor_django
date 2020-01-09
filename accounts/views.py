@@ -61,3 +61,5 @@ class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
                 user=self.request.user, 
                 )
         return context
+
+

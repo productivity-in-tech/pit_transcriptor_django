@@ -6,13 +6,18 @@ from customModelForm import CustomModelForm
 from django.db import models
 from .models import Project
 
-class ProjectDetailForm(CustomModelForm):
+class ProjectModelForm(CustomModelForm):
     class Meta:
         model = Project
+        fields = []
+
+
+class ProjectDetailForm(ProjectModelForm):
+    class Meta:
         fields = (
                 'name',
                 'url',
-                'rss_feed',
+                'rss_feed_url',
                 )
         widgets = {
                 'name': forms.TextInput(
@@ -25,17 +30,20 @@ class ProjectDetailForm(CustomModelForm):
                         'class': 'input', 
                         },
                     ),
-                'rss_feed': forms.TextInput(
+                'rss_feed_url': forms.TextInput(
                     attrs={
                         'class': 'input', 
                         },
                     ),
                 }
         labels = {
-                'rss_feed': _('RSS Feed URL'),
+                'rss_feed_url': _('RSS Feed URL'),
                 } 
         help_text = {
-                'rss_feed': _('The URL of your projects RSS Feed. Used to \
+                'rss_feed_url': _('The URL of your projects RSS Feed. Used to \
                     autoimport projects')
-
                 }
+
+
+class RSSFeedProcessForm(ProjectModelForm):
+    pass

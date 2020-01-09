@@ -6,10 +6,12 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic.list import ListView 
 from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.shortcuts import render, redirect
+
 from .models import Project, ProjectsFollowing
-from .forms import ProjectDetailForm
+from .forms import ProjectDetailForm, RSSFeedProcessForm 
+from .helpers import feed_core_data
 
 from transcriptions.models import Transcription
 
@@ -77,3 +79,13 @@ def unfollow_project(request, pk):
             ).delete()
     return redirect('project_detail', pk=pk)
 
+
+class UserTemplateView(LoginRequiredMixin, FormView):
+    template_name = 'confirm_rss_upload.html'
+    form_class = RSSFeedProcessForm
+    success_url = 'project_detail'
+
+    def form_valid(self, form):
+        project = Project.objects.get(pk=self.kwargs.get('pk'))
+        project.update(rss_feed_item_data=feed_core_data(project.rss_feed_url))
+        return super().form_valid(form)
