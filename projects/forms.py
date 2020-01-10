@@ -14,6 +14,7 @@ class ProjectModelForm(CustomModelForm):
 
 class ProjectDetailForm(ProjectModelForm):
     class Meta:
+        model = Project
         fields = (
                 'name',
                 'url',

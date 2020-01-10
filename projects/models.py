@@ -30,8 +30,7 @@ class Project(models.Model):
             )
     url = models.URLField(unique=True)
     rss_feed_url = models.URLField(blank=True, null=True)
-    rss_feed_item_data = models.TextField(blank=True, null=True)
-
+    rss_updates = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

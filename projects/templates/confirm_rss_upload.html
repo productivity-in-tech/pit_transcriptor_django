@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section">
+  <div class="container box">
+  <h1 class="title is-3">RSS Upload: <span class="subtitle
+  is-5">{{object.name}}</span></h1>
+  </div>
+  </section>
+
+<section class="section">
+  <div class="container box">
+    <h1 class="subtitle">This will look at {{object.rss_feed_url}} and create
+      an object for each item. </h1>
+  <form method="post">
+    {% csrf_token %}
+    <div class="notification is-warning">
+    <h1 class="subtitle is-4">Continue?</p>
+    </div>
+    <div class="field">
+    <div class="control">
+      <input class="button is-link" type="submit" value="Begin Bulk
+      Transcription Load">
+    </div>
+    </div>
+    <div class="field">
+    <div class="control">
+      <a href="{% url 'accounts_detail' user.pk %}" class="button
+      is-primary">Back to My Accounts</a>
+    </div>
+    </div>
+</form>
+  </div>
+  </section>
+
+{% endblock %}

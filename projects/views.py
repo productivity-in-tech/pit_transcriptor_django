@@ -9,9 +9,11 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.shortcuts import render, redirect
 
+from django_q.tasks import async_task, result
+
 from .models import Project, ProjectsFollowing
 from .forms import ProjectDetailForm, RSSFeedProcessForm 
-from .helpers import feed_core_data
+from .helpers import get_feed_data, transcription_get_or_create
 
 from transcriptions.models import Transcription
 
@@ -58,7 +60,6 @@ class ProjectDetailView(DetailView):
                 project=context['object']) 
         context['following'] = ProjectsFollowing.objects.filter(
                 project=self.kwargs.get('pk'),
-                user=self.request.user,
                 )
         return context
 
@@ -80,12 +81,31 @@ def unfollow_project(request, pk):
     return redirect('project_detail', pk=pk)
 
 
-class UserTemplateView(LoginRequiredMixin, FormView):
+class ProjectRSSUploadView(LoginRequiredMixin, UpdateView):
+    model = Project
     template_name = 'confirm_rss_upload.html'
     form_class = RSSFeedProcessForm
-    success_url = 'project_detail'
+
 
     def form_valid(self, form):
-        project = Project.objects.get(pk=self.kwargs.get('pk'))
-        project.update(rss_feed_item_data=feed_core_data(project.rss_feed_url))
+        _project = Project.objects.get(pk=self.kwargs.get('pk'))
+        rss_feed_item_data = feed_data(_project.rss_feed_url)
+        
+        for feed_item in rss_feed_item_data:
+            async_task(
+                    transcription_get_or_create,
+                    feed_item=feed_item,
+                    project=_project,
+                    )
+
         return super().form_valid(form)
+
+    
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('project_detail',
+                kwargs={'pk': self.kwargs.get('pk')})
+        
+
+
+

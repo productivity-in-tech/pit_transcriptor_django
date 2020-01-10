@@ -28,5 +28,11 @@ urlpatterns = [
             'update/<int:pk>',
             views.ProjectUpdateView.as_view(),
             name='project_update',
+            ),
+        path(
+            'rss_update/<int:pk>',
+            views.ProjectRSSUploadView.as_view(),
+            name='project_rss_upload'
             )
+
         ]
