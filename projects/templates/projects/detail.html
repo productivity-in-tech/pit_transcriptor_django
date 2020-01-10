@@ -37,12 +37,60 @@
   {% endif %}
   </h1>
 
-  {% for transcription in transcriptions %}
-    <p>
-    <h2><a
-          href="/transcription/detail/{{transcription.pk}}">{{transcription.name}}</a></h2>
-    </p>
+  <div class="content">
+    <ul>
+    {% for transcription in transcriptions %}
+    <li class="media"><div class="media-left"><span class="icon"><i class="fas
+    fa-podcast"></i></span></div>
+      <div class="media-content">
+        <div class="columns">
+          <div class="column">
+          <a href="{% url 'transcription_detail' transcription.pk %}">{{transcription.name}}</a>
+          </div>
+          </div>
+      </div>
+
+      <div class="media-right">
+        <span class="tags has-addons">
+          <span class="tag is-small is-dark">Status</span>
+            {% if transcription.status == 'in_progress' %}
+              <span class="tag is-small}}">
+                <span class="icon">
+                  <i class="fas fa-spinner fa-pulse">
+                  </i>
+                </span>
+                    Processing
+              </span>
+            {% elif transcription.status == 'completed' %}
+              <span class="tag is-small is-success">
+                <span class="icon">
+                  <i class="fas fa-check">
+                  </i>
+                </span>
+                  Completed
+              </span>
+
+            {% else %}
+              <span class="tag is-small is-danger">
+                <span class="icon">
+                  <i class="fas fa-exclamation-circle"></i>
+                </span>
+                  Error
+              </span>
+             {% endif %}
+        </span>
+      </span>
+
+        <span class="tags has-addons is-small">
+          <span class="tag is-warning is-light"><span class="icon"><i class="fas
+          fa-edit"></i></span>edit</span>
+          <span class="tag is-danger is-light"><span class="icon"><i class="fas
+          fa-times"></i></span>Delete</span>
+        </span>
+      </div>
+      </li>
     {% endfor %}
+    </ul>
   </div>
 </section>
 

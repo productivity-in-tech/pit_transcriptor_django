@@ -8,39 +8,6 @@ from transcriptions.models import Transcription
 from datetime import date
 from time import mktime
 
-def get_feed_text(feed_url):
-    """retrieves the feed using requests as text to store in the DB and be
-    checked against"""
-
-    return requests.get(feed_url).text
-
-def get_feed_item_data(feed_item):
-    for link in feed_item['links']:
-        if link['type'] == 'text/html':
-            url = link['href']
-
-        elif 'audio' in link['type']:
-            audio_file = link['href']
-
-    published_parsed = date.fromtimestamp(
-            mktime(feed_item['published_parsed']),
-            )
-    return {
-            'title': feed_item['title'],
-            'audio_file': audio_file,
-            'publish_date': published_parsed,
-            'url': url,
-            }
-
-
-def get_feed_data(feed):
-    feed_data = feedparser.parse(feed)
-    links = []
-    for item in feed_data['items']:
-        links.append(get_feed_item_data(item))
-    return links
-    
-
 def transcription_get_or_create(feed_item, project):
     t = Transcription.objects.get_or_create(
             name=feed_item['title'], 

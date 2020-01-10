@@ -54,7 +54,7 @@ class Transcription(models.Model):
     settings_show_speaker_labels = models.BooleanField(default=True)
     settings_max_speaker_labels = models.IntegerField(
             blank=True,
-            default=2,
+            default=5,
             validators=[MinValueValidator(0), MaxValueValidator(10)],
             )
     transcription_item_publish_date = models.DateField(blank=True)
@@ -94,7 +94,7 @@ class Transcription(models.Model):
         return job
 
     class Meta:
-        ordering = ['created_date', '-transcription_item_publish_date']
+        ordering = ['-transcription_item_publish_date', 'created_date']
 
     @property
     def job(self):

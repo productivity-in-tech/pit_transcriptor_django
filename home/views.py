@@ -21,9 +21,8 @@ class HomePageView(TemplateView):
                     Q(project__in=following_projects_ids) |
                     Q(project__in=user_projects_ids))
             context['following_transcriptions'] = following_transcriptions[:5]
-            context['latest_transcriptions'] = Transcription.objects.all()[:5]
-            
+            context['transcriptions'] = Transcription.objects.order_by(
+                    '-created_date')[:5]
 
-        context['latest_projects'] = Project.objects.all()[:5]
         return context
 

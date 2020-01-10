@@ -13,7 +13,7 @@ from django_q.tasks import async_task, result
 
 from .models import Project, ProjectsFollowing
 from .forms import ProjectDetailForm, RSSFeedProcessForm 
-from .helpers import get_feed_data, transcription_get_or_create
+from .helpers import transcription_get_or_create
 
 from transcriptions.models import Transcription
 
@@ -88,14 +88,13 @@ class ProjectRSSUploadView(LoginRequiredMixin, UpdateView):
 
 
     def form_valid(self, form):
-        _project = Project.objects.get(pk=self.kwargs.get('pk'))
-        rss_feed_item_data = feed_data(_project.rss_feed_url)
+        project = Project.objects.get(pk=self.kwargs.get('pk'))
         
-        for feed_item in rss_feed_item_data:
+        for feed_item in project.feed_data:
             async_task(
                     transcription_get_or_create,
                     feed_item=feed_item,
-                    project=_project,
+                    project=project,
                     )
 
         return super().form_valid(form)
@@ -106,6 +105,3 @@ class ProjectRSSUploadView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('project_detail',
                 kwargs={'pk': self.kwargs.get('pk')})
         
-
-
-

@@ -56,7 +56,7 @@ class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['projects'] = Project.objects.filter(owner=self.request.user) 
-        context['transcriptions'] = Transcription.objects.filter(owner=self.request.user)
+        context['latest_transcriptions'] = Transcription.objects.filter(owner=self.request.user)[:5]
         context['following'] = ProjectsFollowing.objects.filter(
                 user=self.request.user, 
                 )

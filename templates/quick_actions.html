@@ -1,0 +1,30 @@
+  {% if user.is_authenticated %}
+  <div class="container">
+        <div class="column is-expanded">
+      <div class="card">
+        <div class="card-header">
+          <h1 class="card-header-title subtitle is-6">Quick Actions</h1>
+      </div>
+      <div class="card-footer">
+
+        <div class="card-footer-item">
+          <h1> 
+            <span class="subtitle is-5">Transcriptions:</span>
+              <span class="tags has-addons">
+                <a class="tag is-primary is-light" href="{% url 'transcription_create' %}">Create</a>
+                <a class="tag is-warning is-light" href="#">Manage</a>
+              </span>
+          </h1>
+        </div>
+
+        <div class="card-footer-item">
+              <h1 class="subtitle is-5">Projects:
+                <span class="tags has-addons">
+                  <a class="tag is-primary is-light" href="{% url 'project_create' %}">Create</a>
+                  <a class="tag is-warning is-light" href="#">Manage</a>
+                </span>
+              </h1>
+        </div>
+    </div>
+    {% endif %}
+  </section>
