@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from pathlib import Path
 import logging
-from urllib.parse import urlsplit, urljoin
+from urllib.parse import urlunsplit, urlsplit, urljoin
 
 import uuid
 from . import amazon
@@ -81,8 +81,8 @@ class Transcription(models.Model):
             _settings['ShowSpeakerLabels'] = self.settings_show_speaker_labels
             _settings['MaxSpeakerLabels'] = self.settings_max_speaker_labels
 
-        media_file_uri = urlsplit(self.audio_file.url,
-            allow_fragments=False)._replace(query=None).geturl()
+        # Take sheme, netloc, and url from audio_url
+        media_file_uri = urlunsplit(urlsplit(self.audio_file.url)[:3] + ('', ''))
         logging.warning(f'{media_file_uri=}')
         job = amazon.transcribe.start_transcription_job(
                 TranscriptionJobName=str(self.transcription_key),
@@ -115,3 +115,15 @@ class Transcription(models.Model):
 
     def __str__(self):
         return self.name
+
+
+    class TranscriptionEdit(models.Model):
+        transcription = models.ForeignKey(
+                Transcription,
+                on_delete=models.CASCADE,
+                )
+        created_by = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+        edited_datetime = models.DateTimeField(default=timezone.now())
+
+        class Meta:
+            ordering = ['-edited_datetime']

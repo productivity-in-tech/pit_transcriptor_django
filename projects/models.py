@@ -6,7 +6,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from pathlib import Path
 import logging
 import feedparser
-from urllib.parse import urlsplit, urljoin
+from urllib.parse import urlparse, urlsplit, urljoin
 from datetime import date
 from time import mktime
 
@@ -34,7 +34,7 @@ class Project(models.Model):
     url = models.URLField(unique=True)
     rss_feed_url = models.URLField(blank=True, null=True)
     rss_updates = models.BooleanField(default=False)
-    project_image = models.ImageField(null=True)
+    project_image = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -57,6 +57,7 @@ class Project(models.Model):
 
                 elif 'audio' in link['type']:
                     audio_file = link['href']
+
 
             published_parsed = date.fromtimestamp(
                     mktime(feed_item['published_parsed']),

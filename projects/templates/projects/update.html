@@ -1,22 +1,64 @@
 {% extends 'base.html' %}
 {% block content %}
   <section class="section">
-    <div>
-      <h2 class="title">Update: <span class="subtitle is-3">{{object.name}}</span></h2>
+    <div class="container">
     </div>
   </section>
   <section class="section">
-    <div class="box container">
-      <form method="POST" class="post-project">
+      <div class="columns">
+    <div class="column box container">
+      <h2 class="title">Update: <span class="subtitle is-3">{{object.name}}</span></h2>
+      <form enctype="multipart/form-data" method="POST" class="post-project">
             {% csrf_token %}
-            {{form.as_div}}
-        <div class="field">
+            <div class="columns">
+              <div class="column">
+              <div class="field">
+                <div class="control">
+                  {{form.name.label}}{{form.name}}
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  {{form.url.label}}{{form.url}}
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  {{form.rss_feed_url.label}}{{form.rss_feed_url}}
+                </div>
+              </div>
+            </div>
+
+            <div class="column is-3">
+            <div class="field">
+              <div class="control">
+                {{form.project_image.label}}
+                {% if object.project_image %}
+                <img src="{{object.project_image.url}}">
+                {% endif %}
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+            {{form.project_image}} 
+              </div>
+            </div>
+            </div>
+            </div>
+
+            <div class="field">
+
+            <div class="field">
+
           <div class="control">
             <input type="submit" class="button is-link" value="Update Project">
           </div>
         </div>
       </form>
     </div>
-  </section>
+      </div>
+
+
+</section>
 
 {% endblock %}

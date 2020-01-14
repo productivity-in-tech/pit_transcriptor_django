@@ -91,9 +91,13 @@ class TranscriptionCreateView(LoginRequiredMixin, CreateView):
 
 class TranscriptionDeleteView(DeleteView):
     model = Transcription
-    success_url = 'accounts_detail'
     template_name = 'delete.html'
 
+    def get_success_url(self, **kwargs):
+        return reverse_lazy(
+            'project_detail',
+            kwargs={'pk': self.object.project.pk},
+            )
 
 @require_http_methods(["POST"])
 def bulk_replace(request, pk):

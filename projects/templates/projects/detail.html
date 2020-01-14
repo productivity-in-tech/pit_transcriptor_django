@@ -3,40 +3,55 @@
 {% block content %}
 <section class="section">
   <div class="container">
-    <div class="hero box">
-  {% if object.owner == user %}
-  <h1 class="title is-3">{{object.name}} 
-    <a class="title is-5 has-text-link" href="{% url 'project_update' object.pk %}">(Edit)</a>
-  </h1>
-  {% else %}
-  <h1 class="title">{{object.name}}
-    {% if user != object.owner %}
-      {% if following %}
-        <a class="button is-link"
-           href="{% url 'project_unfollow' object.pk %}">Following</a>
-      {% else %}
-        <a class="button is-link is-outlined"
-           href="{% url 'project_follow' object.pk %}">Follow</a>
+  <div class="columns">
+    <div class="column">
+    <div class="media">
+      {% if object.project_image %}
+      <div class="media-left">
+        <p class="image is-128x128">
+          <img src="{{object.project_image.url}}">
+        </p>
+      </div>
       {% endif %}
-    {% endif %}
+      <div class="media-content">
+
+      {% if object.owner == user %}
+        <h1 class="title is-3">{{object.name}} 
+          <a class="title is-5 has-text-link" href="{% url 'project_update' object.pk %}">(Edit)</a>
+        </h1>
+
+      {% else %}
+      <h1 class="title">{{object.name}}
+        {% if user != object.owner %}
+          {% if following %}
+            <a class="button is-link"
+             href="{% url 'project_unfollow' object.pk %}">Following</a>
+          {% else %}
+            <a class="button is-link is-outlined"
+             href="{% url 'project_follow' object.pk %}">Follow</a>
+          {% endif %}
+        {% endif %}
     </h1>
 
-  {% endif %}
-  <p><a href="{{object.url}}">Visit Website</a></p>
-  {% if object.owner == user %}
-  <p>Maintained by: <a href="{% url 'accounts_detail' object.owner.pk %}">You</a></p>
-  {% else %}
-  <p>Maintained by: <a href="/projects?by_user={{object.owner.pk}}">{{object.owner}}</a></p>
     {% endif %}
-    <p><a href="#">{{object.owner.name}}</a></p>
+
+      <p><a href="{{object.url}}">Visit Website</a></p>
+      {% if object.owner == user %}
+      <p>Maintained by: <a href="{% url 'accounts_detail' object.owner.pk %}">You</a></p>
+      {% else %}
+      <p><a href="#">{{object.owner.name}}</a></p>
+      </div>
+  {% endif %}
+    </div>
+  </div>
   </div>
 
+  <div class="column">
   <h1 class="subtitle is-3">Transcriptions
   {% if object.owner == user %}
   <a class="has-text-link is-size-5" href="/transcription/create">Add New Transcription</a>
   {% endif %}
   </h1>
-
   <div class="content">
     <ul>
     {% for transcription in transcriptions %}
@@ -84,8 +99,8 @@
         <span class="tags has-addons is-small">
           <span class="tag is-warning is-light"><span class="icon"><i class="fas
           fa-edit"></i></span>edit</span>
-          <span class="tag is-danger is-light"><span class="icon"><i class="fas
-          fa-times"></i></span>Delete</span>
+          <span class="tag is-danger is-light"><a href="{% url 'transcription_delete' pk=transcription.pk %}"
+          class="has-text-danger"><span class="icon"><i class="fas fa-times"></i></span>Delete</a></span>
         </span>
       </div>
       </li>
