@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="box">
+      <h1 class="title is-4">Approve Updates: {{object.name}}</h1>
+    </div>
+</div>
+<div class="container box">
+  <form method="POST">
+    {% csrf_token %}
+  <h2 class="subtitle">Proposed Changes: {{ diffs | length }} </h2>
+  {% if diffs %}
+      <div class="columns">
+      {% for diff in diffs %}
+        <div class="column box">
+          <h2 class="subtitle is-6">
+          Change proposed {{diff.edited_datetime}} by
+          {{diff.created_by}}
+          </h2>
+          {% load markup_tags %}
+          <div class="box has-background-light">
+              <label class="checkbox">
+            {{diff.text | apply_markup:"markdown"}}
+            <div>
+                <p>
+                <strong>Add this change</strong>
+                <input type="checkbox">
+                </p>
+              </label>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      </div>
+    {% else %}
+    <h1 class="title has-text-primary is-4">
+      There are no changes to me made! ᕕ(⌐■_■)ᕗ ♪♬
+      </h1>
+  {% endif %}
+    <div class="field is-grouped is-grouped-right">
+      <div class="control">
+        <input class="button is-link" type="submit" value="Change and Keep Non-Selected Changes">
+      </div>
+
+      <div class="control">
+        <input class="button is-warning is-light" type="submit" value="Change and Delete Non-Selected Changes">
+      </div>
+      </div>
+      
+  </form>
+</div>
+</section>
+{% endblock %}

@@ -15,6 +15,7 @@ from django.shortcuts import render, redirect
 # Local Modules
 from .models import (
         Transcription,
+        TranscriptionEdit,
         )
 from .forms import TranscriptionAddForm, TranscriptionUpdateForm
 
@@ -59,10 +60,14 @@ class TranscriptionUpdateView(LoginRequiredMixin, UpdateView):
                 kwargs={'pk': self.object.pk})
 
 
-class TranscriptionTextUpdateView(LoginRequiredMixin, UpdateView):
-    model = Transcription
+class TranscriptionTextUpdateView(LoginRequiredMixin, CreateView):
+    model = TranscriptionEdit
     fields = ['transcription_text']
     template_name = 'transcriptions/update-text.html'
+
+    def form_valid(self, form):
+        form['user'] = self.request.user
+        return super().form_valid()
 
     def get_success_url(self, **kwargs):
         return reverse_lazy(
@@ -98,6 +103,34 @@ class TranscriptionDeleteView(DeleteView):
             'project_detail',
             kwargs={'pk': self.object.project.pk},
             )
+
+class TranscriptionTextCreateView(LoginRequiredMixin, CreateView):
+    model = TranscriptionEdit
+    template_name = 'update-text.html'
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy(
+            'project_detail',
+            kwargs={'pk': self.object.project.pk},
+            )
+
+class TranscriptionTextModeratedUpdateView(LoginRequiredMixin, UpdateView):
+    model = Transcription
+    template_name = 'update-text.html'
+
+    def get_queryset(self):
+        return TranscriptionEdit.objects.filter(
+                transcription=self.kwargs.get('pk'),
+                )
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy(
+            'project_detail',
+            kwargs={'pk': self.object.project.pk},
+            )
+
+class TranscriptionTextModeratedApprovalView(LoginRequiredMixin, UpdateView):
+    pass
 
 @require_http_methods(["POST"])
 def bulk_replace(request, pk):

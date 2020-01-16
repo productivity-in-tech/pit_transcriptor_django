@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="section">
+<div class="container">
+  <div class="box">
+    <h1 class="title is-3">Projects You Follow</h1>
+  </div>
+<div class="box container">
+    {% for followed_project in projects %}
+    <div class="media">
+      {% with followed_project.project  as project %}
+        {% if project.project_image %}
+          <div class="media-left">
+              <img src="{{project.project_image.url}}">
+          </div>
+        {% endif %}
+        <div class="media-content">
+          <div class="">
+            <h1 class="subtitle is-4">
+              <a class="has-text-dark" href="{% url 'project_detail' project.pk %}">{{project.name}}</a>
+            </h1>
+          </div>
+        </div>
+        {% endwith %}
+        <div class="media-right">
+          <form method="POST">
+            {% csrf_token %}
+            <input type="submit" name="unfollow-{{followed_project.pk}}" class="button is-small is-link" value="Unfollow">
+          </form>
+        </div>
+        </div>
+      {% endfor %}
+
+</div>
+</section>
+{% endblock %}

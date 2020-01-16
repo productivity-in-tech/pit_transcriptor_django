@@ -32,7 +32,16 @@ urlpatterns = [
         path(
             'rss_update/<int:pk>',
             views.ProjectRSSUploadView.as_view(),
-            name='project_rss_upload'
-            )
-
+            name='project_rss_upload',
+            ),
+        path(
+            'list/user',
+            views.UserProjectListView.as_view(),
+            name='user_project_list',
+            ),
+        path('list/following',
+            views.UserProjectsFollowedListView.as_view(),
+            name='user_project_following',
+            ),
         ]
+

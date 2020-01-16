@@ -10,18 +10,18 @@ textarea {
 <section class="section">
   <div class="container">
     <h1 class="title is-4 is-primary">Edit Transcription Text</h1>
-    <h1 class="title is-2">{{object.name}}</h1>
+    <h1 class="subtitle is-5">
+      <a href="{% url 'project_detail' transcription.project.pk %}">
+        {{transcription.project}}</a></h1>
+    <h1 class="title is-3">{{transcription.name}}</h1>
     <h2 class="subtitle is-5"><a
-        href="/transcription/update/{{object.pk}}">Edit Transcription Details</a></h2>
+        href="/transcription/update/{{transcription.pk}}">Edit Transcription Details</a></h2>
   </div>
 </section>
 <section class="section">
   <div class="container">
     <form method="POST">
       {% csrf_token %}
-      <div>
-      <a href="transcription/update-speakers/{{object.pk}}">Edit Speakers</a>
-      </div>
 
       {{form.transcriptions_text.label}}
       {{form.transcription_text}}

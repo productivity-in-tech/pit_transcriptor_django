@@ -8,22 +8,38 @@
 
  <section class="section">
   <div class="container">
-    <h1 class="title is-4">{{object.name}}<a href="{{object.url}}">
-      <span class="icon has-text-info"><i class="fas fa-globe-americas"></i></span>
-      </a>
+    <h1 class="title is-4">{{object.name}}
+      {% if object.url %} 
+        <a href="{{object.url}}">
+          <span class="icon has-text-info"><i class="fas fa-globe-americas"></i></span>
+        </a>
+        {% endif %}
     </h1>
       <div class="box">
-      <p>{{object.url}}</p>
       <p>Maintained By: {{object.owner}}</p>
-      <p>Transcriptions Created: {{object.created_by}}</p>
+      <p>Transcriptions Created: {{object.created_date}}</p>
       <p>Status: <strong class="is-capitalized">{{object.status}}</strong></p>
-      <a href="{% url 'transcription_update' transcription.pk %}" class="button is-warning is-small">Edit Transcription Settings</a>
+      {% if user == object.owner %}
+      <a href="{% url 'transcription_update' object.pk %}" class="tag is-warning is-small">Edit Transcription Settings</a>
+      {% endif %}
+
   </div>
 
   <section class="section">
-    <h1 class="title is-5"> Transcription Text <a class="tag is-light
-                                                  has-text-link"
-                                                  href="/transcription/update-text/{{object.pk}}">Edit</a></h1>
+    <h1 class="title is-5"> Transcription Text 
+      {% if user == object.owner %}
+      <a class="tag is-light has-text-link" 
+      href="{% url 'transcription_mod_approve_text' object.pk %}">
+        Edit
+      </a>
+    </h1>
+      {% else %}
+        <a class="tag is-light has-text-link" 
+          href="{% url 'transcription_update_text' object.pk %}">
+            Propose Edit
+        </a>
+    </h1>
+       {% endif %}
 {% if object.status == 'not_started' %}
    <div class="box has-background-light">
          <p class="">The audio file has been uploaded, but no transcription

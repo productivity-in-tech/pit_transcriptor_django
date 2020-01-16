@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+<section class="section">
+<div class="container">
+  <div class="columns">
+    {% for project in object %}
+    <div class="column">
+      {{project}}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+</section>

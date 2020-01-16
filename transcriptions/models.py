@@ -63,7 +63,7 @@ class Transcription(models.Model):
     owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)
     status = models.CharField(
             max_length=128,
-            default='not_started',
+            default='in_progress',
             )
     created_date = models.DateTimeField(auto_now_add=True)
     language = models.CharField(max_length=250, default='en-US', choices=flags)
@@ -117,13 +117,15 @@ class Transcription(models.Model):
         return self.name
 
 
-    class TranscriptionEdit(models.Model):
-        transcription = models.ForeignKey(
+class TranscriptionEdit(models.Model):
+    transcription = models.ForeignKey(
                 Transcription,
                 on_delete=models.CASCADE,
                 )
-        created_by = models.ForeignKey(UserModel, on_delete=models.CASCADE)
-        edited_datetime = models.DateTimeField(default=timezone.now())
+    transcription_text = models.TextField()
+    created_by = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    edited_datetime = models.DateTimeField(default=timezone.now)
 
-        class Meta:
-            ordering = ['-edited_datetime']
+    class Meta:
+        ordering = ['-edited_datetime']
+        get_latest_by = ['edited_datetime']

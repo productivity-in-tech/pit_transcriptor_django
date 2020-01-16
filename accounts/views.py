@@ -17,7 +17,7 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ("username", "email")
 
     def send_confirmation(self):
-        subject = "PIT Transcriptor - Confirm your Account"
+        subject = "New Account Created - PIT Transcriptor"
         from_email = "noreply@discourse.productivityintech.com"
         to_email = self.cleaned_data['email']
         message = render_to_string('email_confirmation.txt',
@@ -61,5 +61,3 @@ class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
                 user=self.request.user, 
                 )
         return context
-
-

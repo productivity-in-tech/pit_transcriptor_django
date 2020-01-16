@@ -8,6 +8,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
 
 from django_q.tasks import async_task, result
 
@@ -18,6 +19,29 @@ from .helpers import transcription_get_or_create
 from transcriptions.models import Transcription
 
 # Create your views here.
+class UserProjectsFollowedListView(LoginRequiredMixin, ListView):
+    """Return a List of all the Projects that the Logged in User Follows"""
+    model = ProjectsFollowing
+    template_name = 'list_following.html'
+    context_object_name = 'projects'
+
+    def post(self, request, *args, **kwargs):
+        unfollow_item = filter(lambda x:'unfollow' in x, request.POST)
+        pk = int(next(unfollow_item).strip('unfollow-'))
+        ProjectsFollowing.objects.get(pk=pk).delete()
+        return HttpResponseRedirect(reverse('user_project_following'))
+
+    def get_queryset(self):
+        return ProjectsFollowing.objects.filter(user=self.request.user)
+
+class UserProjectListView(LoginRequiredMixin, ListView):
+    """Return a List of Projects Belonging to the Current User"""
+    model = Project
+    template_name = 'list_user.html'
+    context_object_name = 'projects'
+
+    def get_queryset(self):
+        return Project.objects.filter(owner=self.request.user)
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project

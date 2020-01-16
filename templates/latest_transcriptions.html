@@ -10,8 +10,15 @@
                   {{transcription.project}}
                 </a>
               </div>
+              {% if transcription.project.project_image %}
+              <div class="card-image">
+                <figure class="image is-1x1">
+                  <img src="{{transcription.project.project_image.url}}">
+                </figure> 
+              </div>
+              {% endif %}
               <div class="card-content">
-                <h1 class="title is-5">
+                <h1 class="title is-6">
                   <a href="{% url 'transcription_detail' transcription.pk %}">{{ transcription }}</a>
                 </h1>
               </div>

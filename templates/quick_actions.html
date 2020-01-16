@@ -20,8 +20,16 @@
         <div class="card-footer-item">
               <h1 class="subtitle is-5">Projects:
                 <span class="tags has-addons">
-                  <a class="tag is-primary is-light" href="{% url 'project_create' %}">Create</a>
-                  <a class="tag is-warning is-light" href="#">Manage</a>
+                  <a 
+                    class="tag is-primary is-light"
+                    href="{% url 'project_create' %}">
+                    Create
+                  </a>
+                  <a 
+                    class="tag is-warning is-light" 
+                    href="{% url 'user_project_list' %}">
+                    Manage
+                  </a>
                 </span>
               </h1>
         </div>

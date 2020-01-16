@@ -7,33 +7,51 @@
   </div>
 {% include 'quick_actions.html' %}
   {% include 'latest_transcriptions.html' %}
-  <div class="column is-expanded is-offset-1">
-    <h1 class="subtitle is-4">Projects <span class="subtitle is-5"><a
-                                             href="project/create/">New
-                                             Project</a></span></h1>
-
-    <hr>
-    {% for project in projects %}
+  <div class="box">
     <div>
-      <a href="{% url 'project_detail' project.pk %}">{{project}}</a>
+      <h1 class="subtitle is-4">Projects <span class="subtitle is-5"><a
     </div>
-    {% endfor %}
+      {% include 'projects_list.html' %}
   </div>
-  </div> 
-  </div>
-</section>
-<sections class="section">
 <div class="box container">
   <h1 class="subtitle">Projects Following</h1>
+<div class="columns">
+      {% for followed_project in following %}
+        {% with followed_project.project  as project %}
+        <div class="column">
+          <div class="card">
+            <div class="card-header">
+              <h1 class="card-header-title title is-4">
+              <a class="has-text-dark" href="{% url 'project_detail' project.pk %}">{{project.name}}</a>
+              </h1>
+            </div>
+            {% if project.project_image %}
+              <div class="card-image">
+                <figure class="image is-1x1">
+                  <img src="{{project.project_image.url}}">
+                </figure>
+            </div>
+            {% endif %}
+            {% if project.owner == user %}
+            <div class="card-footer">
+              <p class="card-footer-item">
+              <a href="{% url 'project_update' project.pk %}">Edit</a>
+              </p>
+              <p class="card-footer-item">
+              <a class="has-text-danger" href="{% url 'project_update'
+                project.pk %}">Delete</a>
+              </p>
+            </div>
+            {% endif %}
 
-  {% for followed_project in following %}
-    <div>
-      <a href="{% url 'project_detail' followed_project.project.pk %}">
-        {{followed_project.project.name}}
-      </a>
+        </div>
+        </div>
+        {% endwith %}
+      {% endfor %}
     </div>
-  {% endfor %}
-</div>
+
+  </div>
+  </div>
   </section>
 
 {% endblock %}

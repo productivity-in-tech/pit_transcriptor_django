@@ -22,13 +22,21 @@ urlpatterns = [
             views.start_transcription,
             name='start_transcription'),
         path(
-            'update-text/<int:pk>',
-            views.TranscriptionTextUpdateView.as_view(),
+            'update-text/<int:transcription_pk>',
+            views.TranscriptionCreateView.as_view(),
             name='transcription_update_text'),
         path(
             'delete/<int:pk>',
             views.TranscriptionDeleteView.as_view(),
             name='transcription_delete'),
+        path(
+            'mod/update-text/<int:pk>',
+            views.TranscriptionTextModeratedUpdateView.as_view(),
+            name='transcription_mod_update_text'),
+        path(
+            'mod/approve/<int:pk>',
+            views.TranscriptionTextModeratedApprovalView.as_view(),
+            name='transcription_mod_approve_text'),
         path(
             'bulk-replace/<int:pk>',
             views.bulk_replace,

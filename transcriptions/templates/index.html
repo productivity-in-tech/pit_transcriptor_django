@@ -23,31 +23,44 @@
     <div class="container">
 
   {% if user.is_authenticated %}
-    <div class="card">
-      <div class="card-header">
-        <h1 class="card-header-title is-5">New Transcriptions from Projects You Follow</h1>
-        </div>
+      <div class="box">
+        <h1 class="subtitle is-5">New Transcriptions from Projects You Follow</h1>
+        <div class="columns">
 
-      <div class="card-content">
-        <div class="content">
-          <ul>
-
-      {% for followed_transcription in following_transcriptions %}
-        <li class="media">
-           <a class="media-content" href="{% url 'transcription_detail' followed_transcription.pk %}">{{followed_transcription}}</a>
-           <span class="media-right"> 
-          <a href="{% url 'project_detail' followed_transcription.project.pk %}" class="tag
-           is-primary is-ligth">{{followed_transcription.project}}</a>
-           <span class="tag">{{followed_transcription.transcription_item_publish_date}}</span>
-           </span>
-        </li>
-      {% endfor %}
-
-            </ul>
-        </div>
+        {% for followed_transcription in following_transcriptions %}
+        <div class="column">
+          <div class="card">
+              <div class="card-content">
+                <a href="{% url 'transcription_detail' followed_transcription.pk %}">
+                  <h1 class="subtitle is-4">{{followed_transcription}}</h1>
+                </a>
+              </div>
+          <div class="card-footer">
+            <div class="card-footer-item">
+              <div class="media">
+              {% if followed_transcription.project.project_image %}
+                <div class="media-left">
+              <a href="{% url 'project_detail' followed_transcription.project.pk %}">
+                  <figure class="image is-48x48">
+                    <img src="{{followed_transcription.project.project_image.url}}">
+                  </figure>
+              </a>
+                </div>
+              {% endif %}
+              <div class="media-content">
+              <a class="link has-text-info" href="{% url 'project_detail' followed_transcription.project.pk %}">
+                <h2 class="card-footer-item">{{followed_transcription.project.name}}</h2>
+              </a>
+              </div>
+          </div>
       </div>
-      <div class="card-footer has-background-info">
-        <a class="card-footer-item has-text-light" href="{% url 'accounts_detail' user.pk %}">Manage Transcriptions you Follow</a>
+        </div>
+        </div>
+        </div>
+        {% endfor %}
+        </div>
+      <div class="">
+        <a class="button is-link" href="{% url 'accounts_detail' user.pk %}">Manage Transcriptions you Follow</a>
       </div>
 
     </div>

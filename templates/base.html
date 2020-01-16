@@ -40,6 +40,28 @@
       </div>
     </div>
 </section>
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'success' %}
+<div class="notification is-success">
+  {{message}}
+</div>
+{% elif message.tags == 'info' %}
+<div class="notification is-info">
+  {{message}}
+</div>
+{% elif message.tags == 'warning' %}
+<div class="notification is-warning">
+  {{message}}
+</div>
+{% elif message.tags == 'error' %}
+<div class="notification is-danger">
+  {{message}}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
 {% block content %}
 {% endblock %} 
 <div class="container">

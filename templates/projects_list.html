@@ -1,0 +1,37 @@
+<div class="columns">
+      {% for project in projects %}
+        <div class="column">
+          <div class="card">
+            <div class="card-header">
+              <h1 class="card-header-title title is-4">
+              <a class="has-text-dark" href="{% url 'project_detail' project.pk %}">
+                {{project.name}}
+              </a>
+              </h1>
+            </div>
+            {% if project.project_image %}
+              <div class="card-image">
+                <figure class="image is-1x1">
+                  <img src="{{project.project_image.url}}">
+                </figure>
+            </div>
+            {% endif %}
+            {% if project.owner == user %}
+            <div class="card-footer">
+              <p class="card-footer-item">
+              <a href="{% url 'project_update' project.pk %}">Edit</a>
+              </p>
+              <p class="card-footer-item">
+              <a 
+                class="has-text-danger"
+                href="{% url 'project_update' project.pk %}">
+                Delete
+              </a>
+              </p>
+            </div>
+            {% endif %}
+
+        </div>
+        </div>
+      {% endfor %}
+    </div>
