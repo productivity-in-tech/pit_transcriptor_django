@@ -59,8 +59,9 @@
         </div>
         {% endfor %}
         </div>
-      <div class="">
-        <a class="button is-link" href="{% url 'accounts_detail' user.pk %}">Manage Transcriptions you Follow</a>
+      <div class="has-text-right">
+        <a class="button is-small is-link"
+          href="{% url 'user_project_following' %}">Manage Transcriptions you Follow</a>
       </div>
 
     </div>

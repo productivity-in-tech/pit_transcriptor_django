@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+ {% block content%}
+
+ <section class="section">
+   <div class="container">
+     <div class="box">
+       <h1 class="title is-3"> Your Transcriptions</h1>
+       {% for transcription in object_list %}
+       {{transcription}}
+       {% endfor %}
+     </div>
+ {% endblock %}

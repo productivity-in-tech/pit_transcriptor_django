@@ -8,6 +8,9 @@ urlpatterns = [
             'create/',
             views.TranscriptionCreateView.as_view(),
             name='transcription_create'),
+        path('list/',
+            views.UserTranscriptionListView.as_view(),
+            name='user_transcription_list'),
         path(
             'detail/<int:pk>',
             views.TranscriptionDetailView.as_view(),

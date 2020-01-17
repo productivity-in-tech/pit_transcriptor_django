@@ -24,7 +24,18 @@ from projects.models import (
         Project,
         )
 
+
+
 # Create your views here.
+class UserTranscriptionListView(LoginRequiredMixin, ListView):
+    model = Transcription
+    template_name = 'list.html'
+
+    def get_queryset(self):
+        pass
+
+
+
 class TranscriptionCreateView(LoginRequiredMixin, CreateView):
     model = Transcription
     template_name = 'transcriptions/create.html'
