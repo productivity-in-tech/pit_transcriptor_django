@@ -23,7 +23,7 @@ urlpatterns = [
             name='start_transcription'),
         path(
             'update-text/<int:transcription_pk>',
-            views.TranscriptionCreateView.as_view(),
+            views.TranscriptionTextCreateView.as_view(),
             name='transcription_update_text'),
         path(
             'delete/<int:pk>',

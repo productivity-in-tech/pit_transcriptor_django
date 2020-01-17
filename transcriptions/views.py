@@ -25,57 +25,6 @@ from projects.models import (
         )
 
 # Create your views here.
-
-class TranscriptionDetailView(DetailView):
-    model = Transcription
-    template_name = 'transcriptions/detail.html'
-
-    def get_object(self):
-        pk = self.kwargs['pk']
-        obj = Transcription.objects.get(pk=pk)
-        status = obj.status
-
-        if status.lower() == 'in_progress':
-            print(status)
-            Transcription.objects.filter(pk=pk).update(
-                    status=obj.update_transcription_status().lower())
-
-            obj = Transcription.objects.get(pk=pk)
-            if not obj.transcription_text and obj.status == 'completed':
-                Transcription.objects.filter(pk=pk).update(
-                        transcription_text=obj.build_amazon_speaker_transcription())
-                    
-
-        obj = Transcription.objects.get(pk=pk)
-
-        return obj
-
-class TranscriptionUpdateView(LoginRequiredMixin, UpdateView):
-    model = Transcription
-    template_name = 'transcriptions/update.html'
-    form_class = TranscriptionUpdateForm
-
-    def get_success_url(self, **kwargs):
-        return reverse_lazy('transcription_detail',
-                kwargs={'pk': self.object.pk})
-
-
-class TranscriptionTextUpdateView(LoginRequiredMixin, CreateView):
-    model = TranscriptionEdit
-    fields = ['transcription_text']
-    template_name = 'transcriptions/update-text.html'
-
-    def form_valid(self, form):
-        form['user'] = self.request.user
-        return super().form_valid()
-
-    def get_success_url(self, **kwargs):
-        return reverse_lazy(
-            'transcription_detail',
-            kwargs={'pk': self.object.pk},
-            )
-
-
 class TranscriptionCreateView(LoginRequiredMixin, CreateView):
     model = Transcription
     template_name = 'transcriptions/create.html'
@@ -104,19 +53,82 @@ class TranscriptionDeleteView(DeleteView):
             kwargs={'pk': self.object.project.pk},
             )
 
+
+class TranscriptionDetailView(DetailView):
+    """The Main Transcription Detail Information"""
+    model = Transcription
+    template_name = 'transcriptions/detail.html'
+
+    def get_object(self):
+        pk = self.kwargs['pk']
+        obj = Transcription.objects.get(pk=pk)
+        status = obj.status
+
+        if status.lower() == 'in_progress':
+            print(status)
+            Transcription.objects.filter(pk=pk).update(
+                    status=obj.update_transcription_status().lower())
+
+            obj = Transcription.objects.get(pk=pk)
+            if not obj.transcription_text and obj.status == 'completed':
+                Transcription.objects.filter(pk=pk).update(
+                        transcription_text=obj.build_amazon_speaker_transcription())
+                    
+
+        obj = Transcription.objects.get(pk=pk)
+
+        return obj
+
+class TranscriptionUpdateView(LoginRequiredMixin, UpdateView):
+    """Edit the transcription settings. This DOES NOT allow for updating the
+    transcription_text"""
+    model = Transcription
+    template_name = 'transcriptions/update.html'
+    form_class = TranscriptionUpdateForm
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('transcription_detail',
+                kwargs={'pk': self.object.pk})
+
+
 class TranscriptionTextCreateView(LoginRequiredMixin, CreateView):
+    """Create a version of the transcription text with Edits"""
     model = TranscriptionEdit
-    template_name = 'update-text.html'
+    fields = ['transcription_text']
+    template_name = 'transcriptions/update-text.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['transcription'] = Transcription.objects.get(
+                pk = self.kwargs.get('transcription_pk')
+                )
+        return context
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['transcription_text'] = Transcription.objects.get(
+                pk = self.kwargs.get('transcription_pk'),
+                ).transcription_text
+        return initial
+
+
+
+    def form_valid(self, form):
+        form['user'] = self.request.user
+        form['transcription'] = self.kwargs.get('transcription_pk')
+        return super().form_valid()
 
     def get_success_url(self, **kwargs):
         return reverse_lazy(
-            'project_detail',
-            kwargs={'pk': self.object.project.pk},
+            'transcription_detail',
+            kwargs={'pk': self.object.pk},
             )
+
 
 class TranscriptionTextModeratedUpdateView(LoginRequiredMixin, UpdateView):
     model = Transcription
     template_name = 'update-text.html'
+    fields = ['transcription_text']
 
     def get_queryset(self):
         return TranscriptionEdit.objects.filter(
@@ -125,7 +137,7 @@ class TranscriptionTextModeratedUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self, **kwargs):
         return reverse_lazy(
-            'project_detail',
+            'transcription_detail',
             kwargs={'pk': self.object.project.pk},
             )
 
