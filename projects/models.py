@@ -71,6 +71,18 @@ class Project(models.Model):
                     })
         return  feed_data_items
 
+    def bulk_replace(self, find_text, replace_text):
+        for transcription in Transcription.objects.filter(project=self):
+            transcription.update_transcription_text(
+                    find_text,
+                    replace_text,
+                    )
+
+class ProjectDictionaryItem(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    find_text = models.CharField(max_length=250)
+    replace_text = models.CharField(max_length=250)
+
 
 class ProjectsFollowing(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)

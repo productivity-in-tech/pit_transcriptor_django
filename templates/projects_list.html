@@ -12,7 +12,9 @@
             {% if project.project_image %}
               <div class="card-image">
                 <figure class="image is-1x1">
-                  <img src="{{project.project_image.url}}">
+                  <a class="has-text-dark" href="{% url 'project_detail' project.pk %}">
+                    <img src="{{project.project_image.url}}">
+                  </a>
                 </figure>
             </div>
             {% endif %}

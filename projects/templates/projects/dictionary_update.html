@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+<section class="section">
+    <div class="box container">
+      <h2 class="subtitle is-3">Add Dictionary Value</h2>
+      <p class="notification">A Dictionary Value will auto replace any values that it matches in a
+      project</p>
+      <div class="has-text-right">
+      <a class="button is-small is-warning" href="#">
+        Review this Project's Dictionary
+      </a>
+      </div>
+
+      <form>
+        <div class="field is-horizontal">
+          <div class="field">
+          <div class="control">
+          <label for="find-text">Replace</label>
+          <input class="input" name="find-text" placeholder="Find Text">
+          </div>
+          </div>
+          <div class="field">
+          <div class="control">
+          <label for="find-text">With</label>
+          <input class="input" name="replace-text" placeholder="Replace Text">
+          </div>
+          </div>
+          </div>
+          <div class="field">
+          <div class="control">
+            <label></label>
+            <input type="submit" class="button is-primary" value="Add
+            Dictionary Value">
+          </div>
+          </div>
+      </form>
+    </div>
+
+
+</section>

@@ -44,4 +44,7 @@ urlpatterns = [
             'bulk-replace/<int:pk>',
             views.bulk_replace,
             name='transcription_bulk_replace_text'),
+        path('download/<int:pk>',
+            views.download_transcription_text,
+            name='download_transcription')
         ]

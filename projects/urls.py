@@ -43,5 +43,9 @@ urlpatterns = [
             views.UserProjectsFollowedListView.as_view(),
             name='user_project_following',
             ),
+        path('dictionary/list/<int:project_pk>',
+            views.ProjectDictionaryListView.as_view(),
+            name='project_dictionary_list',
+            ),
         ]
 

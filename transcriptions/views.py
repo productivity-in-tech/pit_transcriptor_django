@@ -1,5 +1,6 @@
 import re 
 
+from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -32,7 +33,7 @@ class UserTranscriptionListView(LoginRequiredMixin, ListView):
     template_name = 'list.html'
 
     def get_queryset(self):
-        pass
+        return Transcription.objects.filter(owner=self.request.user)
 
 
 
@@ -157,14 +158,10 @@ class TranscriptionTextModeratedApprovalView(LoginRequiredMixin, UpdateView):
 
 @require_http_methods(["POST"])
 def bulk_replace(request, pk):
-    starting_text = Transcription.objects.get(pk=pk).transcription_text
-    new_text = re.sub(
-            request.POST['search-for'],
-            request.POST['replace-with'],
-            starting_text,
-            flags=re.IGNORECASE,
+    return Transcription.objects.get(pk=pk).update_transcription_text(
+            find_text=request.POST['search-for'],
+            replace_text=request.POST['replace-with'],
             )
-    Transcription.objects.filter(pk=pk).update(transcription_text=new_text)
     return redirect('transcription_detail', pk=pk)
 
 
@@ -173,3 +170,14 @@ def start_transcription(request, pk):
     Transcription.objects.get(pk=pk).start_transcription()
     Transcription.objects.filter(pk=pk).update(status='in_progress')
     return redirect('transcription_detail', pk=pk)
+
+
+def download_transcription_text(request, pk):
+    transcription = Transcription.objects.get(pk=pk)
+    content = transcription.transcription_text
+    content_disposition = f'attachment; filename={transcription.name}.txt'
+    response = HttpResponse(content, content_type='text/plain')
+    response['Content-Disposition'] = content_disposition
+    return response
+
+

@@ -5,9 +5,32 @@
     </div>
   </section>
   <section class="section">
+    <div class="container">
+        <div class="level">
+          <div class="level-item level-left">
+            <h2 class="subtitle is-3">Update: {{object.name}}</h2>
+          </div>
+
+          <div class="level-item level-left">
+            <span class="tags has-addons">
+              <a href="{% url 'project_dictionary_list' object.pk %}">
+                <span class="tag">
+                  <span class="icon">
+                    <icon class="fas fa-book"></icon>
+                  </span>
+                </span>
+                <span class="tag is-dark">
+                  Dictionary Items
+                </span>
+              </a>
+            </span>
+          </div> {# End Level-Item #}
+        </div> {# End Level #}
+    </div> {# End Container #}
+
+    <div class="container box">
       <div class="columns">
-    <div class="column box container">
-      <h2 class="title">Update: <span class="subtitle is-3">{{object.name}}</span></h2>
+      <div class="column container">
       <form enctype="multipart/form-data" method="POST" class="post-project">
             {% csrf_token %}
             <div class="columns">
@@ -55,10 +78,9 @@
           </div>
         </div>
       </form>
-    </div>
       </div>
-
-
+      </div>
+      </div>
 </section>
 
 {% endblock %}

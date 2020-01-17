@@ -6,7 +6,54 @@
      <div class="box">
        <h1 class="title is-3"> Your Transcriptions</h1>
        {% for transcription in object_list %}
-       {{transcription}}
+
+       <div class="media">
+         {% if transcription.project.project_image %}
+         <div class="media-left">
+           <figure class="image is-48x48">
+             <img src="{{transcription.project.project_image.url}}">
+           </figure>
+         </div>
+         {% endif %}
+         <div class="media-content">
+           <div class="content">
+             <a href="{% url 'transcription_detail' transcription.pk %}">
+               {{transcription}}
+             </a>
+           </div>
+
+           <div class="level is-mobile">
+             <div class="level-left">
+               <div class="level-item">
+                 <div class="tags has-addons">
+                   <div class="tag is-dark">
+                     <span class="icon is-small has-text-warning">
+                   <icon class="fas fa-pencil-alt">
+                   </icon>
+                 </span>
+                   </div>
+                   <div class="tag is-warning">
+                     Edit
+                   </div>
+                   </div>
+               </div>
+                 <div class="level-item">
+                   <div class="tags has-addons">
+                     <div class="tag">
+                       <span class="icon is-small has-text-danger">
+                         <icon class="fas fa-ban">
+                         </icon>
+                       </span>
+                     </div>
+                     <div class="tag is-danger">
+                       Delete
+                     </div>
+                   </div>
+                 </div>
+              </div>
+             </div>
+           </div>
+       </div>
        {% endfor %}
      </div>
  {% endblock %}

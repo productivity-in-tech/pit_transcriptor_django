@@ -12,7 +12,7 @@ from django.http import HttpResponseRedirect
 
 from django_q.tasks import async_task, result
 
-from .models import Project, ProjectsFollowing
+from .models import Project, ProjectsFollowing, ProjectDictionaryItem
 from .forms import ProjectDetailForm, RSSFeedProcessForm 
 from .helpers import transcription_get_or_create
 
@@ -123,9 +123,18 @@ class ProjectRSSUploadView(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
-    
-
     def get_success_url(self, **kwargs):
         return reverse_lazy('project_detail',
                 kwargs={'pk': self.kwargs.get('pk')})
-        
+
+
+
+class ProjectDictionaryListView(LoginRequiredMixin, ListView):
+    model = ProjectDictionaryItem
+    template_name = 'projects/dictionary_list.html'
+
+     
+    def get_queryset(self):
+        return ProjectDictionaryItem.objects.update(
+                project=self.kwargs.get('project_id'),
+                )

@@ -1,3 +1,4 @@
+import re 
 from django.conf import settings
 from django.utils import timezone
 from django.db import models
@@ -113,8 +114,20 @@ class Transcription(models.Model):
         return transcription_text
 
 
+    def update_transcription_text(self, find_text, replace_text):
+        new_text = re.sub(
+            find_text,
+            replace_text,
+            self.transcription_text,
+            flags=re.IGNORECASE,
+            )
+        self.transcription_text = new_text
+
+
+
     def __str__(self):
         return self.name
+
 
 
 class TranscriptionEdit(models.Model):

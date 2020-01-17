@@ -27,6 +27,11 @@
 
   <section class="section">
     <h1 class="title is-5"> Transcription Text 
+      <span class="icon">
+        <a href="{% url 'download_transcription' object.pk %}">
+        <icon class="fas fa-download has-text-link"></icon>
+        </a>
+      </span>
       {% if user == object.owner %}
       <a class="tag is-light has-text-link" 
       href="{% url 'transcription_mod_approve_text' object.pk %}">
