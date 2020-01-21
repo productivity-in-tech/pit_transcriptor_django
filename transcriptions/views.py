@@ -45,15 +45,22 @@ class UserTranscriptionListView(LoginRequiredMixin, ListView):
 class TranscriptionCreateView(LoginRequiredMixin, CreateView):
     model = Transcription
     template_name = 'transcriptions/create.html'
+    form = TranscriptionAddForm
 
     def get_form(self, **kwargs):
-        return TranscriptionAddForm(request=self.request)
+        form = super().get_form(**kwargs)
+        form.fields['project'].queryset(
+                Project.objects.filter(owner=self.request.user),
+                )
 
     def get_success_url(self, **kwargs):
         return reverse_lazy(
             'transcription_detail',
             kwargs={'pk': self.object.pk},
             )
+
+    def form_invalid(self, form):
+            print(f'{form.non_field_errors=}')
 
     def form_valid(self, form):
         form.instance.owner = self.request.user

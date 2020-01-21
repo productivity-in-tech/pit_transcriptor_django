@@ -55,10 +55,10 @@ class Transcription(models.Model):
     settings_show_speaker_labels = models.BooleanField(default=True)
     settings_max_speaker_labels = models.IntegerField(
             blank=True,
-            default=5,
+            default=4,
             validators=[MinValueValidator(0), MaxValueValidator(10)],
             )
-    transcription_item_publish_date = models.DateField(blank=True)
+    transcription_item_publish_date = models.DateField(null=True, blank=True)
     transcription_text = models.TextField(blank=True)
     project = models.ForeignKey(Project, blank=True, null=True, on_delete=models.SET_NULL)
     owner = models.ForeignKey(UserModel, blank=True, null=True, on_delete=models.SET_NULL)

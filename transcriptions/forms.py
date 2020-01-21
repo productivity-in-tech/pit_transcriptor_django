@@ -27,12 +27,6 @@ class TranscriptionAddForm(CustomModelForm):
                     )
                 }
 
-    def __init__(self, request, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['project'] = forms.ModelChoiceField(
-                queryset=Project.objects.filter(owner=request.user),
-                required=False,
-                )
 
 class TranscriptionUpdateForm(CustomModelForm):
     class Meta:

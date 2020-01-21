@@ -5,6 +5,7 @@
           {% for transcription in latest_transcriptions %}
           <div class="column">
             <div class="card">
+              {% if transcription.project %}
               <div class="card-header">
                 <a class="card-header-title" href="{% url 'project_detail' transcription.project.pk %}">
                   {{transcription.project}}
@@ -16,6 +17,7 @@
                   <img src="{{transcription.project.project_image.url}}">
                 </figure> 
               </div>
+              {% endif %}
               {% endif %}
               <div class="card-content">
                 <h1 class="title is-6">

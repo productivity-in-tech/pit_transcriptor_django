@@ -16,7 +16,7 @@ class ProjectDetailForm(ProjectModelForm):
     class Meta:
         model = Project
         fields = (
-                'name',
+               'name',
                 'url',
                 'rss_feed_url',
                 'project_image',
