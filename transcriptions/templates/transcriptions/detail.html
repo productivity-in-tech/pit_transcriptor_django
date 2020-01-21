@@ -8,6 +8,10 @@
 
  <section class="section">
   <div class="container">
+    <h2 class="subtitle is-5">
+      <a 
+        href="{% url 'project_detail' object.project.pk%}">
+        {{object.project}}</a></h2>
     <h1 class="title is-4">{{object.name}}
       {% if object.url %} 
         <a href="{{object.url}}">

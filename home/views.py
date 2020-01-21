@@ -5,6 +5,8 @@ from projects.models import Project, ProjectsFollowing
 from transcriptions.models import Transcription
 # Create your views here.
 
+from premium_check import is_premium 
+
 class HomePageView(TemplateView):
     template_name = "index.html"
 
@@ -19,10 +21,11 @@ class HomePageView(TemplateView):
 
             following_transcriptions = Transcription.objects.filter(
                     Q(project__in=following_projects_ids) |
-                    Q(project__in=user_projects_ids))
+                     Q(project__in=user_projects_ids))
             context['following_transcriptions'] = following_transcriptions[:5]
             
         context['latest_transcriptions'] = Transcription.objects.all()[:5]
+        context['subscription'] = is_premium(self.request.user)
 
         return context
 

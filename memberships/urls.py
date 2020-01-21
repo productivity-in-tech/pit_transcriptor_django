@@ -7,5 +7,5 @@ urlpatterns = [
         path(
             'register/',
             views.RegisterProMembership.as_view(),
-            name='transcription_create'),
+            name='pro_register'),
     ]

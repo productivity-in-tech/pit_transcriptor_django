@@ -3,7 +3,20 @@
 {% block content %}
 <section class="section">
   <div class="container box">
-    <h1 class="title is-3">Account Details: {{object.username}}</h1>
+    <h1> <span class="title is-3">Account Details: </span><span class="subtitle
+    is-3">{{object.username}}</span><span
+        class="tags has-addons">
+        <span class="tag is-warning">
+        <span class="icon">
+          <icon class="fas fa-star"></icon>
+        </span>
+        </span>
+        <span  class="tag is-dark">
+          Premium User!
+        </span>
+      </span>
+      </span>
+    </h1>
   </div>
 {% include 'quick_actions.html' %}
   {% include 'latest_transcriptions.html' %}

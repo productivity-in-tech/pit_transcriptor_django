@@ -18,8 +18,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('stripe/', include('djstripe.urls', namespace='djstripe')),
     path('', include('home.urls')),
-    path("stripe/", include('djstripe.urls', namespace='djstripe')),
     path('transcription/', include('transcriptions.urls')),
     path('membership/', include('memberships.urls')),
     path('project/', include('projects.urls')),

@@ -10,6 +10,8 @@ from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 
+import djstripe.models
+
 from django_q.tasks import async_task, result
 
 from .models import Project, ProjectsFollowing, ProjectDictionaryItem
@@ -17,6 +19,7 @@ from .forms import ProjectDetailForm, RSSFeedProcessForm
 from .helpers import transcription_get_or_create
 
 from transcriptions.models import Transcription
+from premium_check import is_premium
 
 # Create your views here.
 class UserProjectsFollowedListView(LoginRequiredMixin, ListView):
@@ -34,6 +37,11 @@ class UserProjectsFollowedListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return ProjectsFollowing.objects.filter(user=self.request.user)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['subscription'] = is_premium(self.request.user)
+        return context
+
 class UserProjectListView(LoginRequiredMixin, ListView):
     """Return a List of Projects Belonging to the Current User"""
     model = Project
@@ -43,11 +51,21 @@ class UserProjectListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Project.objects.filter(owner=self.request.user)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['subscription'] = is_premium(self.request.user)
+        return context
+
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
     form_class = ProjectDetailForm
     success_url = reverse_lazy('project_detail')
     template_name = 'projects/create.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['subscription'] = is_premium(self.request.user)
+        return context
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -69,6 +87,11 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['subscription'] = is_premium(self.request.user)
+        return context
+
     def get_success_url(self, **kwargs):
         return reverse_lazy('project_detail',
                 kwargs={'pk':self.object.pk})
@@ -85,6 +108,7 @@ class ProjectDetailView(DetailView):
         context['following'] = ProjectsFollowing.objects.filter(
                 project=self.kwargs.get('pk'),
                 )
+        context['subscription'] = is_premium(self.request.user)
         return context
 
 

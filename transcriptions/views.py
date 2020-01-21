@@ -19,6 +19,7 @@ from .models import (
         TranscriptionEdit,
         )
 from .forms import TranscriptionAddForm, TranscriptionUpdateForm
+from premium_check import is_premium
 
 # Project App Modules
 from projects.models import (
@@ -35,6 +36,10 @@ class UserTranscriptionListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Transcription.objects.filter(owner=self.request.user)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['subscription'] = is_premium(self.request.user)
+        return context
 
 
 class TranscriptionCreateView(LoginRequiredMixin, CreateView):
@@ -70,6 +75,11 @@ class TranscriptionDetailView(DetailView):
     """The Main Transcription Detail Information"""
     model = Transcription
     template_name = 'transcriptions/detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['subscription'] = is_premium(self.request.user)
+        return context
 
     def get_object(self):
         pk = self.kwargs['pk']
@@ -114,6 +124,7 @@ class TranscriptionTextCreateView(LoginRequiredMixin, CreateView):
         context['transcription'] = Transcription.objects.get(
                 pk = self.kwargs.get('transcription_pk')
                 )
+        context['subscription'] = is_premium(self.request.user)
         return context
 
     def get_initial(self):

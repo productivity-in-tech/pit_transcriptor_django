@@ -82,9 +82,9 @@ class Transcription(models.Model):
             _settings['ShowSpeakerLabels'] = self.settings_show_speaker_labels
             _settings['MaxSpeakerLabels'] = self.settings_max_speaker_labels
 
-        # Take sheme, netloc, and url from audio_url
+        # Take sheme, netloc, and url from audio_url, to remove any url suffix
+        # trash
         media_file_uri = urlunsplit(urlsplit(self.audio_file.url)[:3] + ('', ''))
-        logging.warning(f'{media_file_uri=}')
         job = amazon.transcribe.start_transcription_job(
                 TranscriptionJobName=str(self.transcription_key),
                 Media={"MediaFileUri": media_file_uri},
@@ -124,10 +124,8 @@ class Transcription(models.Model):
         self.transcription_text = new_text
 
 
-
     def __str__(self):
         return self.name
-
 
 
 class TranscriptionEdit(models.Model):
