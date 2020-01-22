@@ -26,8 +26,6 @@ from projects.models import (
         Project,
         )
 
-
-
 # Create your views here.
 class UserTranscriptionListView(LoginRequiredMixin, ListView):
     model = Transcription
