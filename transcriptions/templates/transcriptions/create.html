@@ -9,20 +9,57 @@
     </div>
     <div class="container">
       <div class="box">
+        {{form.non_field_errors}}
       <form method="POST" enctype="multipart/form-data" class="post-transcription">
         {% csrf_token %}
           {{form.errors}}
-          {{form.as_div}}
+          <div class="field">
+            <div class="control">
+              {{form.name}}
+            </div>
+          </div>
+          <div class="field">
+            <div class="control">
+              {{form.url}}
+            </div>
+          </div>
+
+          <div class="box has-background-grey-lighter">
+          <div class="field">
+            <div class="file">
+              <label class="is-capitalized">
+                {{form.audio_file.label}}
+                {{form.audio_file}}</label>
+            </div>
+          </div>
+          </div>
+
+          <div class="box">
+          <div class="field">
+            <div class="select ">
+              {{form.project}}
+            </div>
+          </div>
+          </div>
+
+          <div class="field">
+              <label class="is-capitalized">
+                  {{form.transcription_item_publish_date.label}}
+              </label>
+              {{form.transcription_item_publish_date}}
+          </div>
+
         <div class="field">
           <div class="control">
             <button type="submit" class="save button is-link">Upload File</button>
           </div>
         </div>
+
       </form>
     </div>
     </div>
     <section class="section">
-      <div class="notification">
+      <div class="container notification">
         <h2>Don't See Your Project? <a href="/project/create">Create a new one!</a></h2>
       </div>
       </section>

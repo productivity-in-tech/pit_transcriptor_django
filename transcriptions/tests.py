@@ -12,23 +12,30 @@ class TranscriptionTestCase(TestCase):
         self.user = User.objects.create_user(
                 username='test_user',
                 password='test_password')
-        project = Project.objects.create(name='Test_HomePage_Following_Project')
-        self.following_transcription = Transcription.objects.create(
+        project = Project.objects.create(
+                name='Test_HomePage_Following_Project'
+                )
+        self.client.login(username='test_user', password='test_password')
+        self.my_transcription = Transcription.objects.create(
                 name='test_homepage_following_project_transcription',
                 project=project,
                 owner=self.user,
                 audio_file = None,
                 )
-        self.latest_transcription = Transcription.objects.create(
-                name='test_homepage_latest_transcription',
-                project=project,
-                audio_file = None,
-                )
-
 
     def test_User_transcription_list(self):
-        url_response = self.client.get('/transcription/list')
+        url_response = self.client.get('/transcription/list/')
         self.assertEquals(url_response.status_code, 200)
-
-        reverse_response = self.client.get(reverse('home'))
+        reverse_response = self.client.get(reverse('user_transcription_list'))
         self.assertEquals(reverse_response.status_code, 200)
+
+    def test_User_transcription_list_shows_transcriptions_not_in_projects(self):
+        response = self.client.get('/transcription/list/')
+        self.assertIn(
+                self.my_transcription,
+                response.context_data['transcription_list'],
+                )
+
+    def test user_proposed_edit(self):
+        pass
+

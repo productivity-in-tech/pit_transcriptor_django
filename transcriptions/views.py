@@ -1,13 +1,15 @@
-import re 
+import re
 
+from django import forms
+import datetime
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
-from django.views.generic.list import ListView 
+from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -28,6 +30,7 @@ from projects.models import (
 
 # Create your views here.
 class UserTranscriptionListView(LoginRequiredMixin, ListView):
+    """View a list of all the Transcriptions Created by the LoggedInUser"""
     model = Transcription
     template_name = 'list.html'
 
@@ -41,15 +44,10 @@ class UserTranscriptionListView(LoginRequiredMixin, ListView):
 
 
 class TranscriptionCreateView(LoginRequiredMixin, CreateView):
+    """Create a new transcription object"""
     model = Transcription
     template_name = 'transcriptions/create.html'
-    form = TranscriptionAddForm
-
-    def get_form(self, **kwargs):
-        form = super().get_form(**kwargs)
-        form.fields['project'].queryset(
-                Project.objects.filter(owner=self.request.user),
-                )
+    fields = ['name', 'audio_file', 'url', 'project', 'transcription_item_publish_date']
 
     def get_success_url(self, **kwargs):
         return reverse_lazy(
@@ -57,12 +55,46 @@ class TranscriptionCreateView(LoginRequiredMixin, CreateView):
             kwargs={'pk': self.object.pk},
             )
 
-    def form_invalid(self, form):
-            print(f'{form.non_field_errors=}')
-
     def form_valid(self, form):
+        """save the object and start the transcription"""
         form.instance.owner = self.request.user
+        object = form.save()
+        object.start_transcription()
         return super().form_valid(form)
+
+    def get_form_class(self):
+        """Apply custom widgets to the form and filter out projects that not
+        owned by user"""
+        form = super().get_form_class()
+
+        # Name and URL need input class 'input' for Bulma.io
+        form.base_fields['name'].widget = forms.TextInput(
+            attrs={
+                'class': 'input is-primary',
+                'placeholder': 'Transcription Name',
+                },
+            )
+        form.base_fields['url'].widget = forms.TextInput(
+                attrs={
+                    'class': 'input is-primary',
+                    'placeholder': 'URL',
+                    },
+                )
+
+        # Filter projects to only show those owned by user
+        form.base_fields['project'] = forms.ModelChoiceField(
+            queryset=Project.objects.filter(
+                owner=self.request.user
+                ),
+            empty_label="Select a Project",
+            )
+        form.base_fields['transcription_item_publish_date'].widget=forms.SelectDateWidget(
+                    years = list(
+                        range(2000, datetime.datetime.now().year + 1))[::-1],
+                    empty_label=(
+                        'Select Year', 'Select Month', 'Select Day'),
+                    )
+        return form
 
 
 class TranscriptionDeleteView(DeleteView):
@@ -100,7 +132,6 @@ class TranscriptionDetailView(DetailView):
             if not obj.transcription_text and obj.status == 'completed':
                 Transcription.objects.filter(pk=pk).update(
                         transcription_text=obj.build_amazon_speaker_transcription())
-                    
 
         obj = Transcription.objects.get(pk=pk)
 
@@ -122,7 +153,7 @@ class TranscriptionTextCreateView(LoginRequiredMixin, CreateView):
     """Create a version of the transcription text with Edits"""
     model = TranscriptionEdit
     fields = ['transcription_text']
-    template_name = 'transcriptions/update-text.html'
+    template_name = 'update-text.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -139,8 +170,6 @@ class TranscriptionTextCreateView(LoginRequiredMixin, CreateView):
                 ).transcription_text
         return initial
 
-
-
     def form_valid(self, form):
         form['user'] = self.request.user
         form['transcription'] = self.kwargs.get('transcription_pk')
@@ -153,21 +182,23 @@ class TranscriptionTextCreateView(LoginRequiredMixin, CreateView):
             )
 
 
-class TranscriptionTextModeratedUpdateView(LoginRequiredMixin, UpdateView):
+class TranscriptionTextModeratedUpdateView(
+        LoginRequiredMixin,
+        UserPassesTestMixin,
+        UpdateView,
+        ):
+
     model = Transcription
     template_name = 'update-text.html'
     fields = ['transcription_text']
-
-    def get_queryset(self):
-        return TranscriptionEdit.objects.filter(
-                transcription=self.kwargs.get('pk'),
-                )
-
     def get_success_url(self, **kwargs):
         return reverse_lazy(
             'transcription_detail',
             kwargs={'pk': self.object.project.pk},
             )
+
+    def test_func(self):
+        return self.get_object().owner == self.request.user
 
 class TranscriptionTextModeratedApprovalView(LoginRequiredMixin, UpdateView):
     pass
