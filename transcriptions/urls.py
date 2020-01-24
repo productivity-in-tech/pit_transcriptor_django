@@ -27,7 +27,7 @@ urlpatterns = [
         path(
             'update-text/<int:transcription_pk>',
             views.TranscriptionTextCreateView.as_view(),
-            name='transcription_update_text'),
+            name='transcription_request_update_text'),
         path(
             'delete/<int:pk>',
             views.TranscriptionDeleteView.as_view(),

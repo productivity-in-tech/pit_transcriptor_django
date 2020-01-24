@@ -115,8 +115,23 @@ class TranscriptionDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        obj = self.get_object()
+
+        if self.get_object.owner == self.request.user:
+            context['transcription'] = obj
+
+        elif (edited_text := TranscriptionEdit.objects.filter(
+                    transcription=obj,
+                    created_by=self.request.user,
+                    )):
+            context['transcription'] = edited_text
+
+        else:
+            context['transcription'] = obj
+
         context['subscription'] = is_premium(self.request.user)
         return context
+
 
     def get_object(self):
         pk = self.kwargs['pk']

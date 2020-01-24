@@ -136,6 +136,15 @@ class TranscriptionEdit(models.Model):
     transcription_text = models.TextField()
     created_by = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     edited_datetime = models.DateTimeField(default=timezone.now)
+    status = models.CharField(
+            max_length = 250,
+            choices = [
+                ('pending_approval', 'Pending Approval'),
+                ('approved', 'Approved'),
+                ('rejected', 'Rejected'),
+                ],
+            default = 'pending_approval',
+            )
 
     class Meta:
         ordering = ['-edited_datetime']

@@ -36,6 +36,11 @@ class TranscriptionTestCase(TestCase):
                 response.context_data['transcription_list'],
                 )
 
-    def test user_proposed_edit(self):
-        pass
+    def test_user_proposed_edit(self):
+        response = self.client.get(
+                reverse(
+                    'transcription_request_update_text',
+                    args = [self.my_transcription.pk],
+                ))
 
+        self.assertEquals(response.status_code, 200)

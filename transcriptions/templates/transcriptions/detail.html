@@ -38,13 +38,13 @@
       </span>
       {% if user == object.owner %}
       <a class="tag is-light has-text-link" 
-      href="{% url 'transcription_mod_approve_text' object.pk %}">
+      href="{% url 'transcription_mod_update_text' object.pk %}">
         Edit
       </a>
     </h1>
       {% else %}
         <a class="tag is-light has-text-link" 
-          href="{% url 'transcription_update_text' object.pk %}">
+          href="{% url 'transcription_request_update_text' object.pk %}">
             Propose Edit
         </a>
     </h1>

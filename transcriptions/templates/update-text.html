@@ -20,6 +20,21 @@ textarea {
 </section>
 <section class="section">
   <div class="container">
+    {% if transcription.owner != user %}
+    <div class="notification is-warning content">
+      <p>
+      Since you are not the owner of the transcription, you're changes will not
+      be applied automatically. 
+      </p>
+      <p>
+      You're changes will be sent to the owner of the
+      transcription to be approved. You can make several changes and you will
+      see your changes"
+      </p>
+    </div>
+    {% endif %}
+
+    <div>
     <form method="POST">
       {% csrf_token %}
 
@@ -31,6 +46,7 @@ textarea {
         </div>
       </div>
     </form>
+  </div>
   </div>
 </section>
 
