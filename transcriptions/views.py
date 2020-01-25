@@ -116,18 +116,25 @@ class TranscriptionDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         obj = self.get_object()
+        updates = TranscriptionEdit.objects.filter(
+                transcription=obj,
+                status='pending_approval',
+            )
 
-        if self.get_object.owner == self.request.user:
-            context['transcription'] = obj
+        if obj.owner == self.request.user:
+            context['transcription'] = obj.transcription_text
 
-        elif (edited_text := TranscriptionEdit.objects.filter(
-                    transcription=obj,
-                    created_by=self.request.user,
-                    )):
-            context['transcription'] = edited_text
+            if updates:
+                context['update_message'] = 'pending'
+            
+
+        elif (my_updates := list(
+            filter(lambda x:x.created_by == self.request.user, updates))):
+            context['transcription'] = my_updates[0].transcription_text
+            context['update_message'] = 'viewing'
 
         else:
-            context['transcription'] = obj
+            context['transcription'] = obj.transcription_text
 
         context['subscription'] = is_premium(self.request.user)
         return context
@@ -139,7 +146,6 @@ class TranscriptionDetailView(DetailView):
         status = obj.status
 
         if status.lower() == 'in_progress':
-            print(status)
             Transcription.objects.filter(pk=pk).update(
                     status=obj.update_transcription_status().lower())
 
@@ -180,20 +186,25 @@ class TranscriptionTextCreateView(LoginRequiredMixin, CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
+        if (pending_updates := list(
+                filter(
+                    lambda x:x.created_by, 
+                    self.request.user)):
         initial['transcription_text'] = Transcription.objects.get(
                 pk = self.kwargs.get('transcription_pk'),
                 ).transcription_text
         return initial
 
     def form_valid(self, form):
-        form['user'] = self.request.user
-        form['transcription'] = self.kwargs.get('transcription_pk')
-        return super().form_valid()
+        form.instance.created_by = self.request.user
+        form.instance.transcription = Transcription.objects.get(
+                pk=self.kwargs.get('transcription_pk'))
+        return super().form_valid(form)
 
     def get_success_url(self, **kwargs):
         return reverse_lazy(
             'transcription_detail',
-            kwargs={'pk': self.object.pk},
+            kwargs={'pk': self.kwargs.get('transcription_pk')},
             )
 
 

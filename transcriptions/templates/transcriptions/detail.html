@@ -3,7 +3,7 @@
 {% block styler %}
 .transcription-detail h2 {padding: 1em 0; font-weight:bold;}
 {% endblock %}
-
+{% block title %}{{object.name}}{% endblock %}
  {% block content%}
 
  <section class="section">
@@ -12,7 +12,7 @@
       <a 
         href="{% url 'project_detail' object.project.pk%}">
         {{object.project}}</a></h2>
-    <h1 class="title is-4">{{object.name}}
+    <h1 class="title is-4 is-capitalized">{{object.name}}
       {% if object.url %} 
         <a href="{{object.url}}">
           <span class="icon has-text-info"><i class="fas fa-globe-americas"></i></span>
@@ -49,6 +49,19 @@
         </a>
     </h1>
        {% endif %}
+       {% if update_message == 'viewing' %}
+         <div class="notification is-warning is-light">
+           You are viewing <strong>your</strong> most recent edit which has not
+           been approved yet. 
+         </div>
+
+       {% elif update_message == 'pending' %}
+
+       <div class="notification is-warning is-light">
+           There are pending updates to this email.
+         </div>
+       {% endif %}
+
 {% if object.status == 'not_started' %}
    <div class="box has-background-light">
          <p class="">The audio file has been uploaded, but no transcription
@@ -72,7 +85,7 @@
    <div class="box transcription-detail has-background-light">
           {% if object.status == 'completed' %}
           {% load markup_tags %}
-            {{object.transcription_text|apply_markup:"markdown"}} 
+            {{transcription|apply_markup:"markdown"}} 
 
            {% else %}
            <p class="has-text-danger has-text-weight-bold">There is currently No
