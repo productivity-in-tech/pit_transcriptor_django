@@ -186,11 +186,17 @@ class TranscriptionTextCreateView(LoginRequiredMixin, CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        if (pending_updates := list(
-                filter(
-                    lambda x:x.created_by, 
-                    self.request.user)):
-        initial['transcription_text'] = Transcription.objects.get(
+
+        other_edits_by_user = TranscriptionEdit.objects.filter(
+                transcription=self.kwargs.get('transcription_pk'),
+                created_by=self.request.user,
+                )
+
+        if other_edits_by_user:
+            initial['transcription_text'] = other_edits_by_user[0].transcription_text
+
+        else:
+            initial['transcription_text'] = Transcription.objects.get(
                 pk = self.kwargs.get('transcription_pk'),
                 ).transcription_text
         return initial
@@ -226,8 +232,23 @@ class TranscriptionTextModeratedUpdateView(
     def test_func(self):
         return self.get_object().owner == self.request.user
 
-class TranscriptionTextModeratedApprovalView(LoginRequiredMixin, UpdateView):
-    pass
+class TranscriptionTextModeratedApprovalView(
+        LoginRequiredMixin,
+        UserPassesTestMixin,
+        UpdateView,
+        ):
+
+    model = Transcription
+    template_name = 'transcription_text_mod_approval.html'
+
+    def test_func(self):
+        return self.get_object().owner == self.request.user
+
+    def get_queryset(self):
+        obj = TranscriptionEdit.objects.filter(
+                transcription = self.kwargs.get('transcription_pk')
+                status='pending_approval'
+                )
 
 @require_http_methods(["POST"])
 def bulk_replace(request, pk):
