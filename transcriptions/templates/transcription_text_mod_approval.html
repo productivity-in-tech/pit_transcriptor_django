@@ -9,32 +9,46 @@
 <div class="container box">
   <form method="POST">
     {% csrf_token %}
-  <h2 class="subtitle">Proposed Changes: {{ diffs | length }} </h2>
-  {% if diffs %}
+  <h2 class="subtitle">Proposed Changes: {{ updates | length }} </h2>
+  {% if updates %}
       <div class="columns">
-      {% for diff in diffs %}
-        <div class="column box">
-          <h2 class="subtitle is-6">
-          Change proposed {{diff.edited_datetime}} by
-          {{diff.created_by}}
-          </h2>
-          {% load markup_tags %}
-          <div class="box has-background-light">
-              <label class="checkbox">
-            {{diff.text | apply_markup:"markdown"}}
-            <div>
-                <p>
-                <strong>Add this change</strong>
-                <input type="checkbox">
-                </p>
-              </label>
+        {% for update in updates %}
+        <div class="column card">
+            <div class="card-header">
+              <h4 class="card-header-title subtitle is-6">
+                <strong>Change Submitted {{update.edited_datetime}}</strong>
+              </h4>
             </div>
+              <div class="card-content">
+                {% load markup_tags %}
+                {% for update_line in update.update_diff %}
+                {{update_line|apply_markup:"markdown" }}
+                {% endfor %}
+              </div>
+              <div class="card-footer">
+                <div class="card-footer-item">
+                <div class="field">
+                  <div class="control">
+                <label>
+                <strong>Add this change</strong>
+                </label>
+                <input type="checkbox">
+                  </div>
+                </div>
+                </div>
+                <p class="card-footer-item">
+                <a
+                  class="button is-small is-danger"
+                  href="{% url 'transcription_edit_delete' update.id %}">
+                  Delete</a>
+                </p>
+              </div>
           </div>
         </div>
       {% endfor %}
       </div>
     {% else %}
-    <h1 class="title has-text-primary is-4">
+    <h1 class="title has-text-primary is-6">
       There are no changes to me made! ᕕ(⌐■_■)ᕗ ♪♬
       </h1>
   {% endif %}

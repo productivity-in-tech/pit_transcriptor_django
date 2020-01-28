@@ -135,11 +135,12 @@ class TranscriptionEdit(models.Model):
                 )
     transcription_text = models.TextField()
     created_by = models.ForeignKey(UserModel, on_delete=models.CASCADE)
-    edited_datetime = models.DateTimeField(default=timezone.now)
+    edited_datetime = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
             max_length = 250,
             choices = [
                 ('pending_approval', 'Pending Approval'),
+                ('overwitten', 'Overwritten'),
                 ('approved', 'Approved'),
                 ('rejected', 'Rejected'),
                 ],

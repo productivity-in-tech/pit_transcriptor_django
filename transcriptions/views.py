@@ -1,4 +1,5 @@
 import re
+import difflib
 
 from django import forms
 import datetime
@@ -120,6 +121,7 @@ class TranscriptionDetailView(DetailView):
                 transcription=obj,
                 status='pending_approval',
             )
+        context['updates'] = updates
 
         if obj.owner == self.request.user:
             context['transcription'] = obj.transcription_text
@@ -157,6 +159,7 @@ class TranscriptionDetailView(DetailView):
         obj = Transcription.objects.get(pk=pk)
 
         return obj
+
 
 class TranscriptionUpdateView(LoginRequiredMixin, UpdateView):
     """Edit the transcription settings. This DOES NOT allow for updating the
@@ -202,6 +205,10 @@ class TranscriptionTextCreateView(LoginRequiredMixin, CreateView):
         return initial
 
     def form_valid(self, form):
+        other_edits_by_user = TranscriptionEdit.objects.filter(
+                transcription=self.kwargs.get('transcription_pk'),
+                created_by=self.request.user,
+                ).update(status='overwritten')
         form.instance.created_by = self.request.user
         form.instance.transcription = Transcription.objects.get(
                 pk=self.kwargs.get('transcription_pk'))
@@ -219,6 +226,7 @@ class TranscriptionTextModeratedUpdateView(
         UserPassesTestMixin,
         UpdateView,
         ):
+    """View for Transcription Owners to Review and Approve Requested Updates"""
 
     model = Transcription
     template_name = 'update-text.html'
@@ -239,16 +247,49 @@ class TranscriptionTextModeratedApprovalView(
         ):
 
     model = Transcription
+    fields = '__all__'
     template_name = 'transcription_text_mod_approval.html'
 
     def test_func(self):
         return self.get_object().owner == self.request.user
 
+    def get_context_data(self):
+        obj = self.get_object()
+        context = super().get_context_data()
+        updates = TranscriptionEdit.objects.filter(
+                transcription = self.kwargs.get('pk'),
+                status='pending_approval',
+                ).values()
+        for update in updates:
+            update_diff = difflib.context_diff(
+                    obj.transcription_text.splitlines(),
+                    update['transcription_text'].splitlines(),
+                    n=3)
+            update.update({'update_diff': update_diff})
+        context['updates'] = updates
+        return context
+
+class TranscriptionEditDeleteView(LoginRequiredMixin, UserPassesTestMixin,
+        DeleteView):
+    model = TranscriptionEdit
+    template_name = 'transcription_edit_delete.html'
+    def get_success_url(self):
+        return reverse('transcription_mod_approve_text',
+            args=[self.get_object().transcription])
+
+    def test_func(self):
+        if self.get_object().created_by == self.request.user:
+            return True
+
+        elif self.get_object().transcription.owner == self.request.user:
+            return True
+
+class TranscriptionEditListView(LoginRequiredMixin, ListView):
+    model = TranscriptionEdit
+    template_name = 'transcription_edit_list.html'
+    
     def get_queryset(self):
-        obj = TranscriptionEdit.objects.filter(
-                transcription = self.kwargs.get('transcription_pk')
-                status='pending_approval'
-                )
+        return TranscriptionEdit.objects.filter(created_by=self.request.user)
 
 @require_http_methods(["POST"])
 def bulk_replace(request, pk):

@@ -46,5 +46,11 @@ urlpatterns = [
             name='transcription_bulk_replace_text'),
         path('download/<int:pk>',
             views.download_transcription_text,
-            name='download_transcription')
+            name='download_transcription'),
+        path('transcription-edit/delete/<int:pk>',
+            views.TranscriptionEditDeleteView.as_view(),
+            name='transcription_edit_delete'),
+        path('transcription-edit/list/',
+            views.TranscriptionEditListView.as_view(),
+            name='transcription_edit_list'),
         ]

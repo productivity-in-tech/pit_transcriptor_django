@@ -30,29 +30,63 @@
   </div>
 
   <section class="section">
-    <h1 class="title is-5"> Transcription Text 
-      <span class="icon">
-        <a href="{% url 'download_transcription' object.pk %}">
-        <icon class="fas fa-download has-text-link"></icon>
+    <div class="columns is-mobile">
+      <div class="column is-narrow">
+        <h1 class="title is-5"> Transcription Text</h1>
+      </div>
+      <div class="column is-narrow">
+        <span class="icon">
+          <a href="{% url 'download_transcription' object.pk %}">
+          <icon class="fas fa-download has-text-link"></icon>
+          </a>
+        </span>
+      </div>
+        {% if user == object.owner %}
+        <div class="column is-narrow">
+        <a class="tag is-light has-text-link" 
+        href="{% url 'transcription_mod_update_text' object.pk %}">
+          Edit
         </a>
-      </span>
-      {% if user == object.owner %}
-      <a class="tag is-light has-text-link" 
-      href="{% url 'transcription_mod_update_text' object.pk %}">
-        Edit
-      </a>
-    </h1>
+        </div>
+        <div class="column is-narrow">
+        <span class="tags has-addons"> 
+          <span class="tag is-dark">
+            {{updates|length}} Requests
+          </span>
+          <a class="tag is-light has-text-primary"
+        href="{% url 'transcription_mod_approve_text' object.pk %}">
+         Review Edit Requests 
+        </a>
+        </span>
+        </div>
       {% else %}
+      <div class="column is-narrow">
         <a class="tag is-light has-text-link" 
           href="{% url 'transcription_request_update_text' object.pk %}">
             Propose Edit
         </a>
-    </h1>
+      </div>
        {% endif %}
+    </div>
        {% if update_message == 'viewing' %}
-         <div class="notification is-warning is-light">
+         <div class="notification is-warning">
+         <div class="field is-grouped">
+           <div class="control">
            You are viewing <strong>your</strong> most recent edit which has not
            been approved yet. 
+         </div>
+         <div class="control">
+           <a class="button is-primary is-small is-light"
+              href="{% url 'transcription_detail' object.id %}">View Live Transcription
+           </a>
+         </div>
+         <div class="control">
+           <a class="button is-warning is-small is-light"
+              href="{% url 'transcription_edit_list' %}">Manage Your
+              Proposed Edits
+           </a>
+         </div>
+         </div>
          </div>
 
        {% elif update_message == 'pending' %}

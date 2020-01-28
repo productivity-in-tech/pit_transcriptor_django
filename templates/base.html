@@ -31,13 +31,15 @@
             <div class="navbar-item">
               <h2>Welcome Back, {{user}}</h2>
             </div>
-            {% if subscription|length >= 1 %}
+            {% if subscription %}
             <div class="navbar-item has-text-warning">
             <span class="icon">
               <icon class="fas fa-star">
               </icon>
             </span>
+            <span class="subtitle is-6">
               Premium User
+            </span>
             </div>
             {% endif %}
           <div class="navbar-item">
@@ -94,6 +96,10 @@
 	</p>
 	<p>
 		Code is open-source and can be seen on <span class="icon"><i class="fab fa-github"></i></span> 
+  </p>
+	<p>
+    <a href="{% url 'about' %}">About Us</a>
+  </p>
 </footer>
 </div>
 </body>

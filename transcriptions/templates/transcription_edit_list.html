@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+ {% block content %}
+
+ <section class="section">
+   <div class="container">
+     <div class="box">
+       <h1 class="title is-3"> Your Transcription Edits</h1>
+       <table class="table is-hoverable">
+         <thead>
+           <tr>
+             <th>Project</th>
+             <th>Transcription</th>
+             <th>Status</th>
+             <th>Delete</th>
+           </tr>
+         </thead>
+         <tbody>
+       {% for transcription_edit in object_list %}
+           <tr>
+             <td>
+               {{transcription_edit.transcription.project}}
+             </td>
+           <td>
+             {{transcription_edit.transcription}}
+           </td>
+           <td>
+             <a 
+               {% if transcription_edit.get_status_display == 'Approved' %}
+                class="tag is-success is-light is-capitalized"
+               {% elif transcription_edit.get_status_display == 'Pending
+                Approval' %}
+                class="tag is-link is-light is-capitalized"
+               {% elif transcription_edit.get_status_display == 'Rejected' %}
+                class="tag is-danger is-light is-capitalized"
+               {% else %}
+                class="tag"
+               {% endif %}
+                >
+             {{transcription_edit.get_status_display}}
+             </a>
+           </td>
+           {% if transcription_edit.get_status_display == 'Pending Approval' %}
+           <td class="">
+             <a class="tag is-danger"
+                href="{% url 'transcription_edit_delete'  transcription_edit.pk %}">Delete<span class="delete"></span></a>
+           </td>
+           {% endif %}
+           </tr>
+       {% endfor %}
+         </tbody>
+       </table>
+       </div>
+   </div>
+ </section>
+ {% endblock %}
