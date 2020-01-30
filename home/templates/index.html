@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
+<section class="hero is-link is-fullheight-with-navbar">
 {% if user.is_authenticated %}
-  <section class="section">
+<section class="section">
     <div class="container">
     <div class="box">
       <div class="columns">
@@ -67,16 +68,16 @@
     </div>
 
     {% else %}
-    <div class="container box">
-      <h2 class="subtitle is-2"> Create and manage your transcriptions for Free - 
-        <a href="{% url 'transcription_create' %}" class="has-text-grey">Get Started Now!</a></h2>
-    </div>
+      <div class="hero-body">
+      <h2 class="title is-1"> Create and manage your transcriptions for Free - 
+        <a href="{% url 'transcription_create' %}" 
+          class="has-text-white">Get Started Now!</a>
+      </h2>
+      </div>
     {% endif %}
-  </section>
-  <section class="section">
     {% include 'latest_transcriptions.html' %}
-  </section>
 
   {% include 'alpha_warning.html' %}
+</section>
 {% endblock %}
 

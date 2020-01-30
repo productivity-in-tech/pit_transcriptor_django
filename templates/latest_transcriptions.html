@@ -1,6 +1,6 @@
     <div class="container">
         <div class="box">
-          <h2 class="subtitle">Recently Added Transcriptions</h2>
+          <h2 class="subtitle has-text-dark">Recently Added Transcriptions</h2>
         <div class="columns">
           {% for transcription in latest_transcriptions %}
           <div class="column">
@@ -21,7 +21,9 @@
               {% endif %}
               <div class="card-content">
                 <h1 class="title is-6">
-                  <a href="{% url 'transcription_detail' transcription.pk %}">{{ transcription }}</a>
+                  <a 
+                    class="has-text-link"
+                    href="{% url 'transcription_detail' transcription.pk %}">{{ transcription }}</a>
                 </h1>
               </div>
           </div>

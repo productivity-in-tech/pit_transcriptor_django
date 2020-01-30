@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
 <style>
 .error-list {color: red;}
-  {% block styler %}{% endblock %}
+{% block styler %}{% endblock %}
 </style>
 	<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js">
 	</script>
@@ -15,6 +15,7 @@
 <body>
 <section class="hero is-info">
   <div class="hero-head">
+
     <nav class="navbar">
       <div class="container">
         <div class="navbar-brand">
@@ -24,6 +25,7 @@
             </h1>
           </div>
         </div>
+
         <div class="navbar-menu">
           <div class="navbar-end">
 
@@ -62,7 +64,8 @@
     </div>
     {% endif %}
     </div>
-    </nav> </div>
+  </nav>
+</div>
 
 </section>
 
@@ -87,10 +90,11 @@
 {% endif %}
 {% endfor %}
 {% endif %}
+
 {% block content %}
-{% endblock %} 
-<div class="container">
-<footer class="footer">
+{% endblock %}
+
+<footer class="footer has-text-dark">
 	<p>
 		PIT Transcriptor is a <a href="https://productivityintech.com" class="link">Productivity in Tech Project</a> 
 	</p>
@@ -101,6 +105,5 @@
     <a href="{% url 'about' %}">About Us</a>
   </p>
 </footer>
-</div>
 </body>
 </html>
