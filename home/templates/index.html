@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-<section class="hero is-link is-fullheight-with-navbar">
 {% if user.is_authenticated %}
-<section class="section">
+  <section class="section">
     <div class="container">
     <div class="box">
       <div class="columns">
@@ -20,9 +19,6 @@
   </section>
 
         {% endif %}
-  <section class="section">
-    <div class="container">
-
   {% if user.is_authenticated %}
       <div class="box">
         <h1 class="subtitle is-5">New Transcriptions from Projects You Follow</h1>
@@ -68,16 +64,155 @@
     </div>
 
     {% else %}
+      <section class="hero is-link is-large">
       <div class="hero-body">
-      <h2 class="title is-1"> Create and manage your transcriptions for Free - 
+        <div class="container">
+          <div class="box">
+      <h2 class="title is-1 has-text-dark"> Create and manage your transcriptions for Free - 
         <a href="{% url 'transcription_create' %}" 
-          class="has-text-white">Get Started Now!</a>
+          class="has-text-link">Get Started Now!</a>
       </h2>
       </div>
+      </div>
+      </div>
+      <div class="hero-foot">
+        <div class="level">
+          <div class="level-item">
+        <span class="icon is-large has-text-white">
+        <icon class="fas fa-chevron-down fa-4x"></icon>
+        </span>
+          </div>
+        </div>
+      </div>
+      </section>
     {% endif %}
+    <section class"hero is-light is-large">
+      <div class="hero-body">
+        <div class="container">
+          <div class="tiles">
+            <div class="tile is-ancestor">
+              <div class="tile is-parent">
+              <div class="tile is-child">
+                <div class="box">
+                <h1 class="subtitle is-3"><span class="icon is-large
+                  has-text-primary"><icon class="fas fa-search"></icon></span>Increase the ability to be heard!</h1>
+                <div class="content is-large">
+                  <p>Transcriptions are an easy way for people to find and consume your
+            content. PIT Transcriptor allows you to quickly load audio files
+            and generate transcripts.</p>
+            </div>
+            </div>
+            </div>
+            </div>
+
+            <div class="tile is-parent">
+              <div class="tile is-child">
+                  <div class="box">
+                <h1 class="subtitle is-3">
+                  <span class="icon has-text-link is-large">
+                    <icon class="fas fa-universal-access"></icon>
+                  </span>Help More People Consume your Content</h1>
+                <div class="content is-large">
+                  <p>Transcriptions can be one of the most beneficial accessibility
+                  tools for content creators. It allows for people with
+                  hearing disabilities. 
+                </p>
+                </div>
+              </div>
+            </div>
+            </div>
+            </div>
+      <div class="tile is-ancestor">
+            <div class="tile is-parent">
+            <div class="tile is-child">
+                <div class="box">
+              <h1 class="subtitle is-3">
+                <span class="icon has-text-warning is-large">
+                  <icon class="fas fa-tachometer-alt"></icon>
+                </span>
+                Transcriptions and Edits Done Quick. </h1>
+            <div class="content is-large">
+              <p>PIT Transcriptor combines speech-to-text algorithms in
+              combination with Markdown and Regular Expression Tools.
+            </p>
+          </div>
+        </div>
+        </div>
+        </div>
+
+            <div class="tile is-parent">
+            <div class="tile is-child">
+                <div class="box">
+              <h1 class="subtitle is-3">
+                <span class="icon has-text-primary is-large">
+                  <icon class="fas fa-people-carry"></icon>
+                </span>
+                  Empower your Community 
+            </h1>
+          <div class="content is-large">
+              <p>We offer tools that allow you to approves edit requests from
+              anyone. If you want to be more exclusive, we cover that as well.
+            </p>
+        </div>
+        </div>
+          </div>
+          </div>
+            <div class="tile is-parent">
+            <div class="tile is-child">
+                <div class="box">
+              <h1 class="subtitle is-3">
+                <span class="icon has-text-gray-lighter is-large">
+                  <icon class="fas fa-code"></icon>
+                </span>
+                  Use it Wherever 
+            </h1>
+          <div class="content is-large">
+              <p>Want to add your transcription on your own site. That's Cool,
+              You can do that!</p>
+              <p>
+              Want to connect your website to our transcriptions? Our API
+              allows you to pull directly from our servers so users get the
+              most up-to-date content without you having to work too hard.
+            </p>
+            </div>
+          </div>
+      </div>
+      </div>
+
+      </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="box">
+          <h1 class="subtitle is-2">Upload For Free!</h1>
+            <div class="level">
+              <div class="level-item">
+                <div class="content is-large">
+          <p>We believe that accessibility is important!</p> <p>This is why we
+          offer basic transcription and editing tools for free.</p> 
+        </div>
+        </div>
+          <div class="level-item">
+          <a class="button is-large is-primary">Create your Free Account</a>
+        </div>
+        </div>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="level">
+        <div class="level-item">
+      <h1 class="subtitle is-2">Need More Power?</h1>
+      <h1><a class="button is-large is-warning">Go Pro!</a>
+      </h1>
+      </p> 
+      </div>
+      </div>
+    </section>
+
     {% include 'latest_transcriptions.html' %}
 
   {% include 'alpha_warning.html' %}
-</section>
 {% endblock %}
 
