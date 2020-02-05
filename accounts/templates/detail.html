@@ -2,69 +2,75 @@
 
 {% block content %}
 <section class="section">
-  <div class="container box">
-    <h1> <span class="title is-3">Account Details: </span><span class="subtitle
-    is-3">{{object.username}}</span><span
-        class="tags has-addons">
-        <span class="tag is-warning">
-        <span class="icon">
-          <icon class="fas fa-star"></icon>
-        </span>
-        </span>
-        <span  class="tag is-dark">
-          Premium User!
-        </span>
-      </span>
-      </span>
-    </h1>
-  </div>
-{% include 'quick_actions.html' %}
+  <div class="container">
+    <div class="box columns is-vcentered">
+      <div class="column is-narrow">
+        <h1 class="title is-4">Account Details:
+          <span class="subtitle is-3">{{object.username}}</span></h1>
+      </div>
+
+      {% if is_premium %}
+      <div class="column is-narrow">
+        <div class="tags has-addons">
+          <span class="tag is-warning">
+            <span class="icon">
+              <icon class="fas fa-star"></icon>
+            </span>
+          </span>
+            <span class="tag is-dark">Premium User!</span>
+          </span>
+        </div>
+      </div>
+      {% else %}
+      <div class="column is-narrow">
+        <div class="tags has-addons">
+          <span class="tag is-primary">Standard User</span>
+          <span class="tag is-warning">Go Pro</span>
+        </div>
+      </div>
+
+      {% endif %}
+
+    </div>
+  </section>
+
+  {% include 'quick_actions.html' %}
+
   {% include 'latest_transcriptions.html' %}
+
   <div class="box">
     <div>
-      <h1 class="subtitle is-4">Projects <span class="subtitle is-5"><a
+      <h1 class="subtitle is-4">Projects <span class="subtitle is-5">
     </div>
-      {% include 'projects_list.html' %}
+    {% include 'projects_list.html' %}
   </div>
-<div class="box container">
+
+  <section class="section">
+  <div class="box">
   <h1 class="subtitle">Projects Following</h1>
-<div class="columns">
-      {% for followed_project in following %}
-        {% with followed_project.project  as project %}
-        <div class="column">
-          <div class="card">
-            <div class="card-header">
-              <h1 class="card-header-title title is-4">
-              <a class="has-text-dark" href="{% url 'project_detail' project.pk %}">{{project.name}}</a>
-              </h1>
-            </div>
-            {% if project.project_image %}
-              <div class="card-image">
-                <figure class="image is-1x1">
+        <div class="tiles">
+          <div class="tile is-ancestor">
+            <div class="tile is-parent">
+                {% for followed_project in following %}
+                {% with followed_project.project as project %}
+              <div class="tile is-child is-3 box">
+                <h1 class="title">
+                  <a class="has-text-dark" href="{% url 'project_detail' project.pk %}">{{project.name}}</a>
+                </h1>
+
+                {% if project.project_image %}
+                <figure class="image is-128x128">
                   <img src="{{project.project_image.url}}">
                 </figure>
-            </div>
-            {% endif %}
-            {% if project.owner == user %}
-            <div class="card-footer">
-              <p class="card-footer-item">
-              <a href="{% url 'project_update' project.pk %}">Edit</a>
-              </p>
-              <p class="card-footer-item">
-              <a class="has-text-danger" href="{% url 'project_update'
-                project.pk %}">Delete</a>
-              </p>
-            </div>
-            {% endif %}
+              {% endif %}
 
-        </div>
-        </div>
+            </div>
         {% endwith %}
+          </div>
+        </div>
       {% endfor %}
-    </div>
+        </div>
 
-  </div>
-  </div>
   </section>
 
 {% endblock %}
