@@ -27,10 +27,11 @@ from mixins import UserIsPremiumMixin
 # Project App Modules
 from projects.models import (
         Project,
+        ProjectsFollowing,
         )
 
 # Create your views here.
-class UserTranscriptionListView(LoginRequiredMixin, ListView):
+class UserTranscriptionListView(UserIsPremiumMixin, LoginRequiredMixin, ListView):
     """View a list of all the Transcriptions Created by the LoggedInUser"""
     model = Transcription
     template_name = 'list.html'
@@ -38,13 +39,7 @@ class UserTranscriptionListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Transcription.objects.filter(owner=self.request.user)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['subscription'] = is_premium(self.request.user)
-        return context
-
-
-class TranscriptionCreateView(LoginRequiredMixin, CreateView):
+class TranscriptionCreateView(UserIsPremiumMixin, LoginRequiredMixin, CreateView):
     """Create a new transcription object"""
     model = Transcription
     template_name = 'transcriptions/create.html'
@@ -109,7 +104,7 @@ class TranscriptionDeleteView(DeleteView):
             )
 
 
-class TranscriptionDetailView(DetailView):
+class TranscriptionDetailView(UserIsPremiumMixin, DetailView):
     """The Main Transcription Detail Information"""
     model = Transcription
     template_name = 'transcriptions/detail.html'
@@ -137,6 +132,13 @@ class TranscriptionDetailView(DetailView):
 
         else:
             context['transcription'] = obj.transcription_text
+
+        following = ProjectsFollowing.objects.filter(
+                project=obj.project,
+                user=self.request.user,
+                )
+
+        context['following'] = following
 
         return context
 
@@ -172,7 +174,7 @@ class TranscriptionUpdateView(LoginRequiredMixin, UpdateView):
                 kwargs={'pk': self.object.pk})
 
 
-class TranscriptionTextCreateView(LoginRequiredMixin, CreateView):
+class TranscriptionTextCreateView(UserIsPremiumMixin, LoginRequiredMixin, CreateView):
     """Create a version of the transcription text with Edits"""
     model = TranscriptionEdit
     fields = ['transcription_text']
@@ -183,7 +185,6 @@ class TranscriptionTextCreateView(LoginRequiredMixin, CreateView):
         context['transcription'] = Transcription.objects.get(
                 pk = self.kwargs.get('transcription_pk')
                 )
-        context['subscription'] = is_premium(self.request.user)
         return context
 
     def get_initial(self):
@@ -240,6 +241,7 @@ class TranscriptionTextModeratedUpdateView(
         return self.get_object().owner == self.request.user
 
 class TranscriptionTextModeratedApprovalView(
+        UserIsPremiumMixin,
         LoginRequiredMixin,
         UserPassesTestMixin,
         UpdateView,
@@ -268,7 +270,7 @@ class TranscriptionTextModeratedApprovalView(
         context['updates'] = updates
         return context
 
-class TranscriptionEditDeleteView(LoginRequiredMixin, UserPassesTestMixin,
+class TranscriptionEditDeleteView(UserIsPremiumMixin, LoginRequiredMixin, UserPassesTestMixin,
         DeleteView):
     model = TranscriptionEdit
     template_name = 'transcription_edit_delete.html'
@@ -283,7 +285,7 @@ class TranscriptionEditDeleteView(LoginRequiredMixin, UserPassesTestMixin,
         elif self.get_object().transcription.owner == self.request.user:
             return True
 
-class TranscriptionEditListView(LoginRequiredMixin, ListView):
+class TranscriptionEditListView(UserIsPremiumMixin, LoginRequiredMixin, ListView):
     model = TranscriptionEdit
     template_name = 'transcription_edit_list.html'
     
@@ -313,5 +315,4 @@ def download_transcription_text(request, pk):
     response = HttpResponse(content, content_type='text/plain')
     response['Content-Disposition'] = content_disposition
     return response
-
 

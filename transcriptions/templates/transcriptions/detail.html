@@ -8,10 +8,29 @@
 
  <section class="section">
   <div class="container">
-    <h2 class="subtitle is-5">
-      <a 
-        href="{% url 'project_detail' object.project.pk%}">
-        {{object.project}}</a></h2>
+    <div class="media">
+      {% if object.project.project_image %}
+      <div class="media-left">
+        <p class="image is-128x128"> 
+        <img class="is-rounded" src="{{object.project.project_image.url}}">
+        </p>
+      </div>
+      {% endif %}
+      <div class="media-content">
+        <h2 class="subtitle is-5">
+          <a 
+            href="{% url 'project_detail' object.project.pk %}">
+            {{object.project}}</a>
+        {% if following %}
+          <a href="{% url 'project_unfollow' object.project.pk %}" class="button
+            is-small is-info">Following</a>
+
+        {% else %}
+          <a href="{% url 'project_follow' object.project.pk %}" class="button
+            is-link is-small is-outlined">Follow</a>
+
+        {% endif %}
+      </h2>
     <h1 class="title is-4 is-capitalized">{{object.name}}
       {% if object.url %} 
         <a href="{{object.url}}">
@@ -19,16 +38,22 @@
         </a>
         {% endif %}
     </h1>
-      <div class="box">
-      <p>Maintained By: {{object.owner}}</p>
-      <p>Transcriptions Created: {{object.created_date}}</p>
-      <p>Status: <strong class="is-capitalized">{{object.status}}</strong></p>
-      {% if user == object.owner %}
-      <a href="{% url 'transcription_update' object.pk %}" class="tag is-warning is-small">Edit Transcription Settings</a>
-      {% endif %}
-
-  </div>
-
+      <div class="columns">
+        <div class="column is-narrow tags has-addons">
+          <p class="tag is-dark">Owner: </p><p class="tag">{{object.owner}}</p>
+          </div>
+        <div class="column is-narrow tags has-addons">
+          <p class="tag is-dark">Transcriptions Created:</p><p class="tag">{{object.created_date}}</p>
+        </div>
+        <div class="column is-narrow tags has-addons">
+          <p class="tag is-dark">Status:</p><p class="tag"><strong class="is-capitalized">{{object.status}}</strong></p>
+        </div>
+        {% if user == object.owner %}
+        <a href="{% url 'transcription_update' object.pk %}" class="tag is-warning is-small">Edit Transcription Settings</a>
+        {% endif %}
+      </div>
+    </div>
+    </div>
   <section class="section">
     <div class="columns is-mobile">
       <div class="column is-narrow">
@@ -106,6 +131,8 @@
          </form>
        </div>
      </div>
+  </div>
+  </div>
    </section>
 
 {% elif object.status == 'in_progress' %}

@@ -5,9 +5,23 @@
   <div class="box">
     <h1 class="title is-3">Your Projects</h1>
   </div>
-  <div class="columns">
-    {% include 'projects_list.html' %}
-  </div>
-</div>
+</section>
+    {% if projects %}
+      <div class="container">
+        {% include 'projects_list.html' %}
+      </div>
+
+        {% else %}
+        <div class="container has-text-centered">
+          <h1 class="title is-2">You currently don't have any projects setup.</h1>
+          <span class="icon is-large has-text-warning">
+            <i class="far fa-sad-tear fa-4x"></i>
+          </span>
+        </div>
+
+        <div class="container has-text-centered">
+          <a class="button is-link is-light">Create A New Project</a>
+        </div>
+    {% endif %}
 </section>
 {% endblock %}

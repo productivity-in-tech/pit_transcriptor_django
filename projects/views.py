@@ -19,10 +19,14 @@ from .forms import ProjectDetailForm, RSSFeedProcessForm
 from .helpers import transcription_get_or_create
 
 from transcriptions.models import Transcription
-from premium_check import is_premium
+from mixins import UserIsPremiumMixin
 
 # Create your views here.
-class UserProjectsFollowedListView(LoginRequiredMixin, ListView):
+class UserProjectsFollowedListView(
+        UserIsPremiumMixin,
+        LoginRequiredMixin,
+        ListView,
+        ):
     """Return a List of all the Projects that the Logged in User Follows"""
     model = ProjectsFollowing
     template_name = 'list_following.html'
@@ -37,12 +41,12 @@ class UserProjectsFollowedListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return ProjectsFollowing.objects.filter(user=self.request.user)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['subscription'] = is_premium(self.request.user)
-        return context
 
-class UserProjectListView(LoginRequiredMixin, ListView):
+class UserProjectListView(
+        UserIsPremiumMixin,
+        LoginRequiredMixin,
+        ListView,
+        ):
     """Return a List of Projects Belonging to the Current User"""
     model = Project
     template_name = 'list_user.html'
@@ -51,21 +55,16 @@ class UserProjectListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Project.objects.filter(owner=self.request.user)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['subscription'] = is_premium(self.request.user)
-        return context
 
-class ProjectCreateView(LoginRequiredMixin, CreateView):
+class ProjectCreateView(
+        UserIsPremiumMixin,
+        LoginRequiredMixin,
+        CreateView,
+        ):
     model = Project
     form_class = ProjectDetailForm
     success_url = reverse_lazy('project_detail')
     template_name = 'projects/create.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['subscription'] = is_premium(self.request.user)
-        return context
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -76,7 +75,11 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
                 kwargs={'pk':self.object.pk})
 
 
-class ProjectUpdateView(LoginRequiredMixin, UpdateView):
+class ProjectUpdateView(
+        UserIsPremiumMixin, 
+        LoginRequiredMixin,
+        UpdateView,
+        ):
     model = Project
     form_class = ProjectDetailForm
     template_name = 'projects/update.html'
@@ -87,17 +90,15 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['subscription'] = is_premium(self.request.user)
-        return context
-
     def get_success_url(self, **kwargs):
         return reverse_lazy('project_detail',
                 kwargs={'pk':self.object.pk})
 
 
-class ProjectDetailView(DetailView):
+class ProjectDetailView(
+        UserIsPremiumMixin,
+        DetailView,
+        ):
     model = Project
     template_name = 'projects/detail.html'
 
@@ -108,7 +109,6 @@ class ProjectDetailView(DetailView):
         context['following'] = ProjectsFollowing.objects.filter(
                 project=self.kwargs.get('pk'),
                 )
-        context['subscription'] = is_premium(self.request.user)
         return context
 
 
@@ -129,7 +129,7 @@ def unfollow_project(request, pk):
     return redirect('project_detail', pk=pk)
 
 
-class ProjectRSSUploadView(LoginRequiredMixin, UpdateView):
+class ProjectRSSUploadView(UserIsPremiumMixin, LoginRequiredMixin, UpdateView):
     model = Project
     template_name = 'confirm_rss_upload.html'
     form_class = RSSFeedProcessForm
@@ -153,7 +153,7 @@ class ProjectRSSUploadView(LoginRequiredMixin, UpdateView):
 
 
 
-class ProjectDictionaryListView(LoginRequiredMixin, ListView):
+class ProjectDictionaryListView(UserIsPremiumMixin, LoginRequiredMixin, ListView):
     model = ProjectDictionaryItem
     template_name = 'projects/dictionary_list.html'
 
