@@ -19,51 +19,10 @@
   </section>
 
         {% endif %}
-  {% if user.is_authenticated %}
-      <div class="box">
-        <h1 class="subtitle is-5">New Transcriptions from Projects You Follow</h1>
-        <div class="columns">
-
-        {% for followed_transcription in following_transcriptions %}
-        <div class="column">
-          <div class="card">
-              <div class="card-content">
-                <a href="{% url 'transcription_detail' followed_transcription.pk %}">
-                  <h1 class="subtitle is-4">{{followed_transcription}}</h1>
-                </a>
-              </div>
-          <div class="card-footer">
-            <div class="card-footer-item">
-              <div class="media">
-              {% if followed_transcription.project.project_image %}
-                <div class="media-left">
-              <a href="{% url 'project_detail' followed_transcription.project.pk %}">
-                  <figure class="image is-48x48">
-                    <img src="{{followed_transcription.project.project_image.url}}">
-                  </figure>
-              </a>
-                </div>
-              {% endif %}
-              <div class="media-content">
-              <a class="link has-text-info" href="{% url 'project_detail' followed_transcription.project.pk %}">
-                <h2 class="card-footer-item">{{followed_transcription.project.name}}</h2>
-              </a>
-              </div>
-          </div>
-      </div>
-        </div>
-        </div>
-        </div>
-        {% endfor %}
-        </div>
-      <div class="has-text-right">
-        <a class="button is-small is-link"
-          href="{% url 'user_project_following' %}">Manage Transcriptions you Follow</a>
-      </div>
-
-    </div>
-
+    {% if user.is_authenticated %}
+    {% include 'transcriptions_followed_projects.html' %}
     {% else %}
+    
       <section class="hero is-link is-large">
       <div class="hero-body">
         <div class="container">
@@ -85,7 +44,6 @@
         </div>
       </div>
       </section>
-    {% endif %}
     <section class"hero is-light is-large">
       <div class="hero-body">
         <div class="container">
@@ -188,9 +146,11 @@
           <h1 class="subtitle is-2">Upload For Free!</h1>
             <div class="level">
               <div class="level-item">
-                <div class="content is-large">
-          <p>We believe that accessibility is important!</p> <p>This is why we
+                <div class="content">
+          <p class="content is-large">Accessibility is important!</p> <p
+          class="content is-large">This is why we
           offer basic transcription and editing tools for free.</p> 
+          <p class="tag is-small"><a href="{% url 'model' %}">Learn How</a></p>
         </div>
         </div>
           <div class="level-item">
@@ -201,15 +161,19 @@
       </div>
     </section>
     <section class="section">
-      <div class="level">
-        <div class="level-item">
+      <div class="columns">
+        <div class="column is-narrow is-offset-one-quarter">
       <h1 class="subtitle is-2">Need More Power?</h1>
-      <h1><a class="button is-large is-warning">Go Pro!</a>
+      </div>
+      <div class="column is-narrow">
+      <h1><a class="button is-large is-warning" disabled>Go Pro! (Coming
+          Soon)</a>
       </h1>
-      </p> 
       </div>
       </div>
+      {% include 'pro.html' %}
     </section>
+    {% endif %}
 
     {% include 'latest_transcriptions.html' %}
 

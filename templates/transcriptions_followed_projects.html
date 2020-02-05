@@ -1,0 +1,66 @@
+
+  <div class="container">
+      <div class="box">
+        <h1 class="subtitle is-5">New Transcriptions from Projects You Follow</h1>
+
+        {% if following_transcriptions %}
+
+        <div class="columns">
+          {% for followed_transcription in following_transcriptions %}
+
+          <div class="column">
+          <div class="card">
+              <div class="card-content">
+                <a href="{% url 'transcription_detail' followed_transcription.pk %}">
+                  <h1 class="subtitle is-4">{{followed_transcription}}</h1>
+                </a>
+              </div>
+          <div class="card-footer">
+            <div class="card-footer-item">
+              <div class="media">
+
+              {% if followed_transcription.project.project_image %}
+                <div class="media-left">
+              <a href="{% url 'project_detail' followed_transcription.project.pk %}">
+                  <figure class="image is-48x48">
+                    <img src="{{followed_transcription.project.project_image.url}}">
+                  </figure>
+              </a>
+                </div>
+              {% endif %}
+
+              <div class="media-content">
+              <a class="link has-text-info" href="{% url 'project_detail' followed_transcription.project.pk %}">
+                <h2 class="card-footer-item">{{followed_transcription.project.name}}</h2>
+              </a>
+              </div>
+          </div>
+      </div>
+        </div>
+        </div>
+        </div>
+        {% endfor %}
+        </div>
+      <div class="has-text-right">
+        <a class="button is-small is-link"
+          href="{% url 'user_project_following' %}">Manage Transcriptions you Follow</a>
+      </div>
+      {% else %}
+      <div class="level">
+        <div class="level-item">
+          <div class="notification is-warning">
+            <h1 class="subtitle is-4">You haven't created a project or followed
+              any shows?</h1><h1 class="has-text-centered"><span class="icon
+                is-large"><i class="far fa-grin-beam-sweat fa-3x"></i></span></h1>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <a href="project/create" class="button is-primary is-light"><h1>Create a Project</h1></a>
+        <a href="" class="button is-info is-light" disabled ><h1>Discover New Shows</h1></a>
+      </div>
+      </div>
+      {% endif %}
+
+    </div>
+

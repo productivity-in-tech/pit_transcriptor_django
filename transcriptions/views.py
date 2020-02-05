@@ -22,7 +22,7 @@ from .models import (
         TranscriptionEdit,
         )
 from .forms import TranscriptionAddForm, TranscriptionUpdateForm
-from premium_check import is_premium
+from mixins import UserIsPremiumMixin
 
 # Project App Modules
 from projects.models import (
@@ -128,7 +128,7 @@ class TranscriptionDetailView(DetailView):
 
             if updates:
                 context['update_message'] = 'pending'
-            
+
 
         elif (my_updates := list(
             filter(lambda x:x.created_by == self.request.user, updates))):
@@ -138,7 +138,6 @@ class TranscriptionDetailView(DetailView):
         else:
             context['transcription'] = obj.transcription_text
 
-        context['subscription'] = is_premium(self.request.user)
         return context
 
 

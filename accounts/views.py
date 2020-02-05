@@ -43,11 +43,6 @@ class SignUp(generic.CreateView):
     success_url = reverse_lazy('login')
     template_name = 'signup.html'
 
-    def form_valid(self, form):
-        form.send_confirmation()
-        return super().form_valid(form)
-
-
 class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = User
     template_name = "detail.html"

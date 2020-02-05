@@ -5,9 +5,10 @@ from projects.models import Project, ProjectsFollowing
 from transcriptions.models import Transcription
 # Create your views here.
 
-from premium_check import is_premium 
+from mixins import UserIsPremiumMixin
 
-class HomePageView(TemplateView):
+
+class HomePageView(UserIsPremiumMixin, TemplateView):
     template_name = "index.html"
 
     def get_context_data(self, **kwargs):
@@ -23,15 +24,13 @@ class HomePageView(TemplateView):
                     Q(project__in=following_projects_ids) |
                      Q(project__in=user_projects_ids))
             context['following_transcriptions'] = following_transcriptions[:5]
-            
+
         context['latest_transcriptions'] = Transcription.objects.all()[:5]
-        context['subscription'] = is_premium(self.request.user)
 
         return context
 
-class AboutPageView(TemplateView):
+class AboutPageView(UserIsPremiumMixin, TemplateView):
     template_name = "about.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['subscription'] = is_premium(self.request.user)
+class ModelPageView(UserIsPremiumMixin, TemplateView):
+    template_name = "model.html"
