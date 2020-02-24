@@ -3,7 +3,7 @@ asgiref==3.2.3
 attrs==19.3.0
 autobahn==19.11.1
 Automat==0.8.0
-bleach==3.1.0
+bleach==3.1.1
 bleach-whitelist==0.0.10
 blessed==1.16.1
 boto3==1.10.39
