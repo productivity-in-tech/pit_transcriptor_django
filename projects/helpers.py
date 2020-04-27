@@ -14,7 +14,7 @@ def transcription_get_or_create(feed_item, project):
             owner=project.owner,
             transcription_item_publish_date=feed_item['publish_date'],
             project=project,
-            defaults = {'status': 'in_progress'}
+            defaults = {'status': 'not_started'}
             )
 
     if t[1]:
@@ -27,7 +27,4 @@ def transcription_get_or_create(feed_item, project):
                     Path(audio_file).name,
                     tempfile,
                     )
-        t[0].start_transcription()
-        t[0].save()
-
 

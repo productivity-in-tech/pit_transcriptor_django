@@ -16,6 +16,7 @@ class TranscriptionAddForm(CustomModelForm):
                 'url',
                 'language',
                 'transcription_item_publish_date',
+                'transcription_format',
                 )
         widgets = {
                 'transcription_item_publish_date':
@@ -35,6 +36,7 @@ class TranscriptionUpdateForm(CustomModelForm):
                 'name',
                 'url',
                 'transcription_item_publish_date',
+                'owner',
                 )
 
         widgets = {

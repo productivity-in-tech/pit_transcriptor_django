@@ -25,7 +25,7 @@ urlpatterns = [
             views.start_transcription,
             name='start_transcription'),
         path(
-            'update-text/<int:transcription_pk>',
+            'update-text/<int:pk>',
             views.TranscriptionTextCreateView.as_view(),
             name='transcription_request_update_text'),
         path(
@@ -33,20 +33,15 @@ urlpatterns = [
             views.TranscriptionDeleteView.as_view(),
             name='transcription_delete'),
         path(
-            'mod/update-text/<int:pk>',
-            views.TranscriptionTextModeratedUpdateView.as_view(),
-            name='transcription_mod_update_text'),
-        path(
-            'mod/approve/<int:pk>',
-            views.TranscriptionTextModeratedApprovalView.as_view(),
-            name='transcription_mod_approve_text'),
-        path(
             'bulk-replace/<int:pk>',
             views.bulk_replace,
             name='transcription_bulk_replace_text'),
-        path('download/<int:pk>',
+        path('download_text/<int:pk>',
             views.download_transcription_text,
             name='download_transcription'),
+        path('download_audio/<int:pk>',
+            views.download_transcription_audio,
+            name='download_transcription_audio'),
         path('transcription-edit/delete/<int:pk>',
             views.TranscriptionEditDeleteView.as_view(),
             name='transcription_edit_delete'),

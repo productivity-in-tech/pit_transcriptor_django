@@ -12,10 +12,6 @@ import requests
 transcribe = boto3.client('transcribe')
 
 
-def check_transcription(key):
-    return 'Test'
-
-
 def get_transcription(job):
     job_uri = job['TranscriptionJob']["Transcript"]["TranscriptFileUri"]
     r = requests.get(job_uri)
@@ -24,7 +20,7 @@ def get_transcription(job):
     return r.json()
 
 
-def build_text(transcript_pair):
+def build_text(transcript_pair, format="MILLER"):
     """Given a speaker ([0]), transcript ([1]) pair. Generate text block with the Speaker,
     Start_time, and Content"""
     speaker, transcript_data = transcript_pair
@@ -32,7 +28,27 @@ def build_text(transcript_pair):
     start_time = str(datetime.timedelta(seconds=round(float(transcript_data['start_time']))))
     content = transcript_data['alternatives'][0]['transcript']
     # Now sew it all together
-    return f'## {speaker} {start_time}\n\n\n{content}'
+
+    if format == "MILLER":
+        return f'## {speaker} {start_time}\n\n{content}\n\n'
+
+    if format == "KENNEDY":
+        return f'{start_time} {speaker}:\n\n{content}\n\n'
+
+
+def get_markers(transcript_pairs):
+    """equivalent to build text however this does not include the start time"""
+    markers = []
+    last_speaker = ''
+
+    for speaker, transcript_data in transcript_pairs:
+        if speaker != last_speaker:
+            markers.append({
+                'speaker': speaker,
+                'start_time': transcript_data['start_time']})
+            last_speaker = speaker
+
+    return markers
 
 
 def build_speaker_pairs(transcript_json):

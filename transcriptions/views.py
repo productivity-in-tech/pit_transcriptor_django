@@ -3,7 +3,7 @@ import difflib
 
 from django import forms
 import datetime
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -37,13 +37,15 @@ class UserTranscriptionListView(UserIsPremiumMixin, LoginRequiredMixin, ListView
     template_name = 'list.html'
 
     def get_queryset(self):
-        return Transcription.objects.filter(owner=self.request.user)
+        transcriptions = Transcription.objects.filter(
+                owner=self.request.user).order_by('-created_date')
+        return transcriptions
 
 class TranscriptionCreateView(UserIsPremiumMixin, LoginRequiredMixin, CreateView):
     """Create a new transcription object"""
     model = Transcription
     template_name = 'transcriptions/create.html'
-    fields = ['name', 'audio_file', 'url', 'project', 'transcription_item_publish_date']
+    fields = ['name', 'audio_file', 'url', 'project', 'transcription_format', 'transcription_item_publish_date']
 
     def get_success_url(self, **kwargs):
         return reverse_lazy(
@@ -57,6 +59,7 @@ class TranscriptionCreateView(UserIsPremiumMixin, LoginRequiredMixin, CreateView
         object = form.save()
         object.start_transcription()
         return super().form_valid(form)
+
 
     def get_form_class(self):
         """Apply custom widgets to the form and filter out projects that not
@@ -112,31 +115,15 @@ class TranscriptionDetailView(UserIsPremiumMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         obj = self.get_object()
-        updates = TranscriptionEdit.objects.filter(
-                transcription=obj,
-                status='pending_approval',
-            )
-        context['updates'] = updates
+        context['transcription'] = obj.transcription_text
 
-        if obj.owner == self.request.user:
-            context['transcription'] = obj.transcription_text
-
-            if updates:
-                context['update_message'] = 'pending'
-
-
-        elif (my_updates := list(
-            filter(lambda x:x.created_by == self.request.user, updates))):
-            context['transcription'] = my_updates[0].transcription_text
-            context['update_message'] = 'viewing'
-
+        if self.request.user.is_authenticated:
+            following = ProjectsFollowing.objects.filter(
+                    project=obj.project,
+                    user=self.request.user,
+                    )
         else:
-            context['transcription'] = obj.transcription_text
-
-        following = ProjectsFollowing.objects.filter(
-                project=obj.project,
-                user=self.request.user,
-                )
+            following = False
 
         context['following'] = following
 
@@ -174,109 +161,25 @@ class TranscriptionUpdateView(LoginRequiredMixin, UpdateView):
                 kwargs={'pk': self.object.pk})
 
 
-class TranscriptionTextCreateView(UserIsPremiumMixin, LoginRequiredMixin, CreateView):
+class TranscriptionTextCreateView(UserIsPremiumMixin, LoginRequiredMixin, UpdateView):
     """Create a version of the transcription text with Edits"""
-    model = TranscriptionEdit
+    model = Transcription
     fields = ['transcription_text']
     template_name = 'update-text.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['transcription'] = Transcription.objects.get(
-                pk = self.kwargs.get('transcription_pk')
-                )
-        return context
-
-    def get_initial(self):
-        initial = super().get_initial()
-
-        other_edits_by_user = TranscriptionEdit.objects.filter(
-                transcription=self.kwargs.get('transcription_pk'),
-                created_by=self.request.user,
-                )
-
-        if other_edits_by_user:
-            initial['transcription_text'] = other_edits_by_user[0].transcription_text
-
-        else:
-            initial['transcription_text'] = Transcription.objects.get(
-                pk = self.kwargs.get('transcription_pk'),
-                ).transcription_text
-        return initial
-
-    def form_valid(self, form):
-        other_edits_by_user = TranscriptionEdit.objects.filter(
-                transcription=self.kwargs.get('transcription_pk'),
-                created_by=self.request.user,
-                ).update(status='overwritten')
-        form.instance.created_by = self.request.user
-        form.instance.transcription = Transcription.objects.get(
-                pk=self.kwargs.get('transcription_pk'))
-        return super().form_valid(form)
-
     def get_success_url(self, **kwargs):
-        return reverse_lazy(
-            'transcription_detail',
-            kwargs={'pk': self.kwargs.get('transcription_pk')},
-            )
+        return reverse_lazy('transcription_detail',
+                kwargs={'pk': self.object.pk})
 
-
-class TranscriptionTextModeratedUpdateView(
-        LoginRequiredMixin,
-        UserPassesTestMixin,
-        UpdateView,
-        ):
-    """View for Transcription Owners to Review and Approve Requested Updates"""
-
-    model = Transcription
-    template_name = 'update-text.html'
-    fields = ['transcription_text']
-    def get_success_url(self, **kwargs):
-        return reverse_lazy(
-            'transcription_detail',
-            kwargs={'pk': self.object.project.pk},
-            )
-
-    def test_func(self):
-        return self.get_object().owner == self.request.user
-
-class TranscriptionTextModeratedApprovalView(
-        UserIsPremiumMixin,
-        LoginRequiredMixin,
-        UserPassesTestMixin,
-        UpdateView,
-        ):
-
-    model = Transcription
-    fields = '__all__'
-    template_name = 'transcription_text_mod_approval.html'
-
-    def test_func(self):
-        return self.get_object().owner == self.request.user
-
-    def get_context_data(self):
-        obj = self.get_object()
-        context = super().get_context_data()
-        updates = TranscriptionEdit.objects.filter(
-                transcription = self.kwargs.get('pk'),
-                status='pending_approval',
-                ).values()
-        for update in updates:
-            update_diff = difflib.context_diff(
-                    obj.transcription_text.splitlines(),
-                    update['transcription_text'].splitlines(),
-                    n=3)
-            update.update({'update_diff': update_diff})
-        context['updates'] = updates
-        return context
 
 class TranscriptionEditDeleteView(UserIsPremiumMixin, LoginRequiredMixin, UserPassesTestMixin,
         DeleteView):
     model = TranscriptionEdit
     template_name = 'transcription_edit_delete.html'
+
     def get_success_url(self):
-        return reverse('transcription_mod_approve_text',
-            args=[self.get_object().transcription])
+        return reverse('transcription_detail',
+            args=[self.get_object().transcription.pk])
 
     def test_func(self):
         if self.get_object().created_by == self.request.user:
@@ -288,16 +191,19 @@ class TranscriptionEditDeleteView(UserIsPremiumMixin, LoginRequiredMixin, UserPa
 class TranscriptionEditListView(UserIsPremiumMixin, LoginRequiredMixin, ListView):
     model = TranscriptionEdit
     template_name = 'transcription_edit_list.html'
-    
+
     def get_queryset(self):
         return TranscriptionEdit.objects.filter(created_by=self.request.user)
 
+
+
 @require_http_methods(["POST"])
 def bulk_replace(request, pk):
-    return Transcription.objects.get(pk=pk).update_transcription_text(
+    new_text = Transcription.objects.get(pk=pk).update_transcription_text(
             find_text=request.POST['search-for'],
             replace_text=request.POST['replace-with'],
             )
+    Transcription.objects.filter(pk=pk).update(transcription_text=new_text)
     return redirect('transcription_detail', pk=pk)
 
 
@@ -313,6 +219,15 @@ def download_transcription_text(request, pk):
     content = transcription.transcription_text
     content_disposition = f'attachment; filename={transcription.name}.txt'
     response = HttpResponse(content, content_type='text/plain')
+    response['Content-Disposition'] = content_disposition
+    return response
+
+
+def download_transcription_audio(request, pk):
+    transcription = Transcription.objects.get(pk=pk)
+    content = transcription.audio_file
+    content_disposition = f'attachment; filename={transcription.name}.mp3'
+    response = HttpResponse(content, content_type='audio/mpeg')
     response['Content-Disposition'] = content_disposition
     return response
 

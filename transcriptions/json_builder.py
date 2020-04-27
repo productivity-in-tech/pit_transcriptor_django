@@ -6,7 +6,7 @@ import logging
 import re
 import sys
 
-def build_text(transcript_pair):
+def build_text(transcript_pair, format="MILLER"):
     """Given a speaker ([0]), transcript ([1]) pair. Generate text block with the Speaker,
     Start_time, and Content"""
     speaker, transcript_data = transcript_pair
@@ -14,7 +14,7 @@ def build_text(transcript_pair):
     start_time = str(datetime.timedelta(seconds=round(float(transcript_data['start_time']))))
     content = transcript_data['alternatives'][0]['transcript']
     # Now sew it all together
-    return f"""{speaker} {start_time}
+    return f"""## {speaker} {start_time}
 {content}"""
 
 def build_speaker_transcript(transcript_json):

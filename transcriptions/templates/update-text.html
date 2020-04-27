@@ -14,28 +14,44 @@ textarea {
       <a href="{% url 'project_detail' transcription.project.pk %}">
         {{transcription.project}}</a></h1>
     <h1 class="title is-3">{{transcription.name}}</h1>
+{% if user == transcription.owner %}
     <h2 class="subtitle is-5"><a
         href="/transcription/update/{{transcription.pk}}">Edit Transcription Details</a></h2>
   </div>
+  {% endif %}
 </section>
 <section class="section">
   <div class="container">
-    {% if transcription.owner != user %}
-    <div class="notification is-warning content">
-      <p>
-      Since you are not the owner of the transcription, you're changes will not
-      be applied automatically. 
-      </p>
-      <p>
-      You're changes will be sent to the owner of the
-      transcription to be approved. You can make several changes and you will
-      see your changes"
-      </p>
-    </div>
-    {% endif %}
-
-    <div>
     <form method="POST">
+    <div>
+      <audio id="transcription-audio" style="width:100%;" src="{{transcription.audio_file.url}}" controls></audio>
+        <p class="label">
+        Enter the time in MINUTES . (DOT) SECONDS FORMAT. Then press Jump 🦘!
+        </p>
+      <div class="field has-addons">
+        <div class="control">
+          <input class="input" placeholder="Jump To" id="transcription-seek"></input>
+        </div>
+        <div class="control">
+            <input type="button" onclick="jumpTo()" class="button is-warning
+                                                    is-inverted"
+            value="Jump">
+      </div>
+      <div class="control">
+      <input type="button" onclick="back15()" class="button is-light"
+                                              value="Back 15">
+      </div>
+      <div class="control">
+      <input type="button" onclick="forward15()" class="button is-light"
+                                              value="Forward 15">
+      </div>
+      <div class="control">
+      <input type="button" onclick="playPause()" class="button is-success
+                                                 is-inverted"
+                                              value="Play/Paused">
+      </div>
+      </div>
+
       {% csrf_token %}
 
       {{form.transcriptions_text.label}}
@@ -53,7 +69,7 @@ textarea {
 <section class="section">
   <div class="container">
     <h1 class="subtitle">Bulk Find/Replace</h1>
-    <form class="form" action="/transcription/bulk-replace/{{object.pk}}" method="POST">
+    <form class="form" action="/transcription/bulk-replace/{{transcription.pk}}" method="POST">
       {% csrf_token %}
   <div class="field">
     <div class="control">
@@ -73,4 +89,36 @@ textarea {
 </form>
   </div>
 </section>
+<script>
+  var audio = document.querySelector('#transcription-audio');
+
+  function jumpTo () {
+    var timeString = document.querySelector('#transcription-seek');
+    var [minutes, seconds] = timeString.value.split('.').map(x => Number(x))
+    seconds += minutes * 60
+    audio.currentTime = seconds;
+    return audio.play();
+  };
+
+
+  function back15 () {
+    audio.currentTime -= 15;
+    return audio.play();
+  };
+
+  function forward15 () {
+    audio.currentTime += 15;
+    return audio.play();
+  };
+
+  function playPause() {
+    if (audio.paused){
+      return audio.play()
+    }
+    else {
+      return audio.pause()
+    }
+  };
+
+</script>
 {% endblock %}

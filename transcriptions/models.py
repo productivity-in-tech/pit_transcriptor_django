@@ -1,4 +1,4 @@
-import re 
+import re
 from django.conf import settings
 from django.utils import timezone
 from django.db import models
@@ -35,7 +35,7 @@ flags = [
 
 UserModel = get_user_model()
 
-    
+
 class Transcription(models.Model):
     """Individual Transcriptions"""
     audio_file = models.FileField(null=True)
@@ -68,6 +68,13 @@ class Transcription(models.Model):
             )
     created_date = models.DateTimeField(auto_now_add=True)
     language = models.CharField(max_length=250, default='en-US', choices=flags)
+    transcription_format = models.CharField(choices=[
+            ('MILLER', 'MILLER Format'),
+            ('KENNEDY', 'KENNEDY Format'),
+            ],
+            max_length=128,
+            default='MILLER',
+            )
 
     def start_transcription(self):
         _settings = {
@@ -109,8 +116,11 @@ class Transcription(models.Model):
     def build_amazon_speaker_transcription(self):
         json_file = amazon.get_transcription(self.job)# returns the Output.json file generated from amazon
         speaker_pairs = amazon.build_speaker_pairs(json_file) # makes speaker/transcript pairs
-        transcription_list = list(map(amazon.build_text, speaker_pairs)) # the thing that expands the zip files
-        transcription_text = '\n\n\n'.join(transcription_list)
+        transcription_list = list(
+                map(
+                    lambda x:amazon.build_text(x, self.transcription_format),
+                    speaker_pairs)) # the thing that expands the zip files
+        transcription_text = ''.join(transcription_list)
         return transcription_text
 
 
@@ -121,8 +131,7 @@ class Transcription(models.Model):
             self.transcription_text,
             flags=re.IGNORECASE,
             )
-        self.transcription_text = new_text
-
+        return new_text
 
     def __str__(self):
         return self.name

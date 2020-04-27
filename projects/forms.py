@@ -20,6 +20,7 @@ class ProjectDetailForm(ProjectModelForm):
                 'url',
                 'rss_feed_url',
                 'project_image',
+                'edit_allowed',
                 )
         widgets = {
                 'name': forms.TextInput(

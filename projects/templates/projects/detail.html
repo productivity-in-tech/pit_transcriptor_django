@@ -97,11 +97,11 @@
       </span>
 
         <span class="tags has-addons is-small">
-          <span class="tag is-warning is-light"><span class="icon"><i class="fas
-          fa-edit"></i></span>edit</span>
+          {% if user = transcription.owner or user in transcription.project.edit_allowed.all %}
+          <span class="tag is-warning is-light">
+              <a href="{% url 'transcription_request_update_text' pk=transcription.pk %}" class="has-text-warning"><span class="icon"><i class="fas fa-edit"></i></span>edit</span></a>
           <span class="tag is-danger is-light"><a href="{% url 'transcription_delete' pk=transcription.pk %}"
-          class="has-text-danger"><span class="icon"><i class="fas fa-times"></i></span>Delete</a></span>
-        </span>
+          class="has-text-danger"><span class="icon"><i class="fas fa-times"></i></span>Delete</span></a></span>
       </div>
       </li>
     {% endfor %}

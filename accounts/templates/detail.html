@@ -46,14 +46,14 @@
   </div>
 
   <section class="section">
-  <div class="box">
-  <h1 class="subtitle">Projects Following</h1>
+  <div class="container box">
+  <h1 class="subtitle is-4">Projects Following</h1>
         <div class="tiles">
           <div class="tile is-ancestor">
-            <div class="tile is-parent">
+              <div class="tile is-parent">
                 {% for followed_project in following %}
                 {% with followed_project.project as project %}
-              <div class="tile is-child is-3 box">
+                <div class="tile is-child box">
                 <h1 class="title">
                   <a class="has-text-dark" href="{% url 'project_detail' project.pk %}">{{project.name}}</a>
                 </h1>
@@ -63,12 +63,12 @@
                   <img src="{{project.project_image.url}}">
                 </figure>
               {% endif %}
-
             </div>
         {% endwith %}
+      {% endfor %}
           </div>
         </div>
-      {% endfor %}
+        </div>
         </div>
 
   </section>

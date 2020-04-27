@@ -10,6 +10,10 @@ def is_customer(user):
         else:
             return False
 
+    else:
+        return False
+
+
 
 def is_premium(user):
         plan = djstripe.models.Plan.objects.get(nickname='Transcription Test')
@@ -22,3 +26,5 @@ def is_premium(user):
                 plan=plan,
                 )
 
+        else:
+            return []

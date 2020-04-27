@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
-from django.views.generic.list import ListView 
+from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, FormView
@@ -15,7 +15,7 @@ import djstripe.models
 from django_q.tasks import async_task, result
 
 from .models import Project, ProjectsFollowing, ProjectDictionaryItem
-from .forms import ProjectDetailForm, RSSFeedProcessForm 
+from .forms import ProjectDetailForm, RSSFeedProcessForm
 from .helpers import transcription_get_or_create
 
 from transcriptions.models import Transcription
@@ -76,7 +76,7 @@ class ProjectCreateView(
 
 
 class ProjectUpdateView(
-        UserIsPremiumMixin, 
+        UserIsPremiumMixin,
         LoginRequiredMixin,
         UpdateView,
         ):
@@ -105,9 +105,10 @@ class ProjectDetailView(
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['transcriptions'] = Transcription.objects.filter(
-                project=context['object']) 
+                project=context['object']).order_by('-created_date')
         context['following'] = ProjectsFollowing.objects.filter(
                 project=self.kwargs.get('pk'),
+                user = self.request.user,
                 )
         return context
 
@@ -137,7 +138,7 @@ class ProjectRSSUploadView(UserIsPremiumMixin, LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         project = Project.objects.get(pk=self.kwargs.get('pk'))
-        
+
         for feed_item in project.feed_data:
             async_task(
                     transcription_get_or_create,
@@ -157,7 +158,6 @@ class ProjectDictionaryListView(UserIsPremiumMixin, LoginRequiredMixin, ListView
     model = ProjectDictionaryItem
     template_name = 'projects/dictionary_list.html'
 
-     
     def get_queryset(self):
         return ProjectDictionaryItem.objects.update(
                 project=self.kwargs.get('project_id'),

@@ -12,3 +12,4 @@ class UserIsPremiumMixin:
         context['is_premium'] = is_premium(user)
         return context
 
+
