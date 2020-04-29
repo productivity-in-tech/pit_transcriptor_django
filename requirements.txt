@@ -16,7 +16,7 @@ django-markup==1.4.1      # via -r requirements.in
 django-picklefield==2.1.1  # via django-q
 django-q==1.2.1           # via -r requirements.in
 django-storages==1.8      # via -r requirements.in
-django==3.0               # via -r requirements.in, dj-stripe, django-markup, django-picklefield, django-q, django-storages, djangorestframework, jsonfield
+django==3.0.3             # via -r requirements.in, dj-stripe, django-markup, django-picklefield, django-q, django-storages, djangorestframework, jsonfield
 djangorestframework==3.11.0  # via -r requirements.in
 docutils==0.15.2          # via botocore
 feedparser==5.2.1         # via -r requirements.in
