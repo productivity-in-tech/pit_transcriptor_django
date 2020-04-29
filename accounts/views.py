@@ -9,8 +9,6 @@ from transcriptions.models import Transcription
 from projects.models import Project, ProjectsFollowing
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-import djstripe.models
-from premium_check import is_premium
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -36,7 +34,6 @@ class CustomUserCreationForm(UserCreationForm):
             )
 
         
-
 # Create your views here
 class SignUp(generic.CreateView):
     form_class = CustomUserCreationForm
@@ -56,6 +53,6 @@ class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         context['projects'] = Project.objects.filter(owner=self.request.user) 
         context['latest_transcriptions'] = Transcription.objects.filter(owner=self.request.user)[:5]
         context['following'] = ProjectsFollowing.objects.filter(
-                user=self.request.user, 
+                user=self.request.user,
                 )
         return context

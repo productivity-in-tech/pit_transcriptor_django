@@ -1,0 +1,13 @@
+arrow
+django
+django-storages
+markdown
+psycopg2-binary
+django_markup
+djangorestframework
+django-q
+dj-stripe
+boto3
+feedparser
+Pillow
+gunicorn

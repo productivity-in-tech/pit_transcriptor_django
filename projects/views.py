@@ -10,20 +10,14 @@ from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 
-import djstripe.models
-
-from django_q.tasks import async_task, result
-
 from .models import Project, ProjectsFollowing, ProjectDictionaryItem
 from .forms import ProjectDetailForm, RSSFeedProcessForm
 from .helpers import transcription_get_or_create
 
 from transcriptions.models import Transcription
-from mixins import UserIsPremiumMixin
 
 # Create your views here.
 class UserProjectsFollowedListView(
-        UserIsPremiumMixin,
         LoginRequiredMixin,
         ListView,
         ):
@@ -43,7 +37,6 @@ class UserProjectsFollowedListView(
 
 
 class UserProjectListView(
-        UserIsPremiumMixin,
         LoginRequiredMixin,
         ListView,
         ):
@@ -57,7 +50,6 @@ class UserProjectListView(
 
 
 class ProjectCreateView(
-        UserIsPremiumMixin,
         LoginRequiredMixin,
         CreateView,
         ):
@@ -76,7 +68,6 @@ class ProjectCreateView(
 
 
 class ProjectUpdateView(
-        UserIsPremiumMixin,
         LoginRequiredMixin,
         UpdateView,
         ):
@@ -96,7 +87,6 @@ class ProjectUpdateView(
 
 
 class ProjectDetailView(
-        UserIsPremiumMixin,
         DetailView,
         ):
     model = Project
@@ -130,7 +120,7 @@ def unfollow_project(request, pk):
     return redirect('project_detail', pk=pk)
 
 
-class ProjectRSSUploadView(UserIsPremiumMixin, LoginRequiredMixin, UpdateView):
+class ProjectRSSUploadView( LoginRequiredMixin, UpdateView):
     model = Project
     template_name = 'confirm_rss_upload.html'
     form_class = RSSFeedProcessForm
@@ -140,11 +130,9 @@ class ProjectRSSUploadView(UserIsPremiumMixin, LoginRequiredMixin, UpdateView):
         project = Project.objects.get(pk=self.kwargs.get('pk'))
 
         for feed_item in project.feed_data:
-            async_task(
                     transcription_get_or_create,
                     feed_item=feed_item,
                     project=project,
-                    )
 
         return super().form_valid(form)
 
@@ -154,7 +142,7 @@ class ProjectRSSUploadView(UserIsPremiumMixin, LoginRequiredMixin, UpdateView):
 
 
 
-class ProjectDictionaryListView(UserIsPremiumMixin, LoginRequiredMixin, ListView):
+class ProjectDictionaryListView( LoginRequiredMixin, ListView):
     model = ProjectDictionaryItem
     template_name = 'projects/dictionary_list.html'
 

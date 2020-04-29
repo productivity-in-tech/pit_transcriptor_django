@@ -22,7 +22,6 @@ from .models import (
         TranscriptionEdit,
         )
 from .forms import TranscriptionAddForm, TranscriptionUpdateForm
-from mixins import UserIsPremiumMixin
 
 # Project App Modules
 from projects.models import (
@@ -31,7 +30,7 @@ from projects.models import (
         )
 
 # Create your views here.
-class UserTranscriptionListView(UserIsPremiumMixin, LoginRequiredMixin, ListView):
+class UserTranscriptionListView( LoginRequiredMixin, ListView):
     """View a list of all the Transcriptions Created by the LoggedInUser"""
     model = Transcription
     template_name = 'list.html'
@@ -41,7 +40,7 @@ class UserTranscriptionListView(UserIsPremiumMixin, LoginRequiredMixin, ListView
                 owner=self.request.user).order_by('-created_date')
         return transcriptions
 
-class TranscriptionCreateView(UserIsPremiumMixin, LoginRequiredMixin, CreateView):
+class TranscriptionCreateView( LoginRequiredMixin, CreateView):
     """Create a new transcription object"""
     model = Transcription
     template_name = 'transcriptions/create.html'
@@ -107,7 +106,7 @@ class TranscriptionDeleteView(DeleteView):
             )
 
 
-class TranscriptionDetailView(UserIsPremiumMixin, DetailView):
+class TranscriptionDetailView( DetailView):
     """The Main Transcription Detail Information"""
     model = Transcription
     template_name = 'transcriptions/detail.html'
@@ -161,7 +160,7 @@ class TranscriptionUpdateView(LoginRequiredMixin, UpdateView):
                 kwargs={'pk': self.object.pk})
 
 
-class TranscriptionTextCreateView(UserIsPremiumMixin, LoginRequiredMixin, UpdateView):
+class TranscriptionTextCreateView( LoginRequiredMixin, UpdateView):
     """Create a version of the transcription text with Edits"""
     model = Transcription
     fields = ['transcription_text']
@@ -172,7 +171,7 @@ class TranscriptionTextCreateView(UserIsPremiumMixin, LoginRequiredMixin, Update
                 kwargs={'pk': self.object.pk})
 
 
-class TranscriptionEditDeleteView(UserIsPremiumMixin, LoginRequiredMixin, UserPassesTestMixin,
+class TranscriptionEditDeleteView( LoginRequiredMixin, UserPassesTestMixin,
         DeleteView):
     model = TranscriptionEdit
     template_name = 'transcription_edit_delete.html'
@@ -188,7 +187,7 @@ class TranscriptionEditDeleteView(UserIsPremiumMixin, LoginRequiredMixin, UserPa
         elif self.get_object().transcription.owner == self.request.user:
             return True
 
-class TranscriptionEditListView(UserIsPremiumMixin, LoginRequiredMixin, ListView):
+class TranscriptionEditListView( LoginRequiredMixin, ListView):
     model = TranscriptionEdit
     template_name = 'transcription_edit_list.html'
 

@@ -18,12 +18,9 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('stripe/', include('djstripe.urls', namespace='djstripe')),
     path('', include('home.urls')),
     path('transcription/', include('transcriptions.urls')),
-    path('membership/', include('memberships.urls')),
     path('project/', include('projects.urls')),
-    path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('api/', include('api.urls')),
+    path('accounts/', include('accounts.urls')),
     ]

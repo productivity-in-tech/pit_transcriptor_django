@@ -5,15 +5,12 @@ from projects.models import Project, ProjectsFollowing
 from transcriptions.models import Transcription
 # Create your views here.
 
-from mixins import UserIsPremiumMixin
 
-
-class HomePageView(UserIsPremiumMixin, TemplateView):
+class HomePageView(TemplateView):
     template_name = "index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         if self.request.user.is_authenticated:
             following_projects_ids = ProjectsFollowing.objects.filter(
                     user=self.request.user).values_list('project', flat=True)
@@ -29,8 +26,8 @@ class HomePageView(UserIsPremiumMixin, TemplateView):
 
         return context
 
-class AboutPageView(UserIsPremiumMixin, TemplateView):
+class AboutPageView( TemplateView):
     template_name = "about.html"
 
-class ModelPageView(UserIsPremiumMixin, TemplateView):
+class ModelPageView( TemplateView):
     template_name = "model.html"

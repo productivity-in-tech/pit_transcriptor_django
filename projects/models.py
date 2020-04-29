@@ -35,7 +35,7 @@ class Project(models.Model):
     rss_feed_url = models.URLField(blank=True, null=True)
     rss_updates = models.BooleanField(default=False)
     project_image = models.ImageField(null=True, blank=True)
-    edit_allowed = models.ManyToManyField(UserModel, null=True, blank=True)
+    edit_allowed = models.ManyToManyField(UserModel, blank=True)
 
     def __str__(self):
         return self.name

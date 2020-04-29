@@ -23,9 +23,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('APP_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False 
+DEBUG = True
 
-ALLOWED_HOSTS = ['transcriptor.productivityintech.com', 'localhost']
+ALLOWED_HOSTS = [
+        'transcriptions.productivityintech.com',
+        'transcriptor.productivityintech.com',
+        'localhost',
+        ]
 
 
 # Application definition
@@ -37,19 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'api.apps.ApiConfig',
     'transcriptions.apps.TranscriptionsConfig',
     'accounts.apps.AccountsConfig',
     'projects.apps.ProjectsConfig',
     'home.apps.HomeConfig',
-    'memberships.apps.MembershipsConfig',
-
     'storages',
     'django_markup',
-    'rest_framework',
-    'django_q',
-    'djstripe',
 ]
 
 
@@ -89,13 +86,12 @@ WSGI_APPLICATION = 'transcriptor_web.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DATABASE_NAME'),
         'USER': os.environ.get('DATABASE_USER'),
         'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        'HOST': '',
+        'HOST': 'localhost',
         'PORT': '',
-        'STORAGE_ENGINE': ' MyISAM /INNODB /ETC'
     }
 }
 
@@ -134,17 +130,6 @@ EMAIL_HOST=os.environ.get('EMAIL_HOST')
 EMAIL_PORT=os.environ.get('EMAIL_PORT')
 EMAIL_HOST_USER=os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')
-
-
-# DJANGO Q
-Q_CLUSTER = {
-    'save_limit': 250,
-    'queue_limit': 500,
-    'redis': {
-        'host': '127.0.0.1',
-        'port': 6379,
-        'db': 0, }
-}
 
 
 # Internationalization

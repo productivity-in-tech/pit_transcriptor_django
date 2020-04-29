@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('APP_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['transcriptor.productivityintech.com']
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -37,19 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'api.apps.ApiConfig',
     'transcriptions.apps.TranscriptionsConfig',
-    'accounts.apps.AccountsConfig',
     'projects.apps.ProjectsConfig',
     'home.apps.HomeConfig',
-
     'storages',
     'django_markup',
-    'rest_framework',
-    'django_q',
-    'djstripe',
-    'memberships.apps.MembershipsConfig',
 ]
 
 
@@ -89,13 +81,12 @@ WSGI_APPLICATION = 'transcriptor_web.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DATABASE_NAME'),
         'USER': os.environ.get('DATABASE_USER'),
         'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        'HOST': '',
+        'HOST': 'localhost',
         'PORT': '',
-        'STORAGE_ENGINE': ' MyISAM /INNODB /ETC'
     }
 }
 
@@ -137,6 +128,14 @@ EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')
 
 
 # DJANGO Q
+Q_CLUSTER = {
+    'save_limit': 250,
+    'queue_limit': 500,
+    'redis': {
+        'host': '127.0.0.1',
+        'port': 6379,
+        'db': 0, }
+}
 
 
 # Internationalization
@@ -158,7 +157,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
 STRIPE_LIVE_PUBLIC_KEY = os.environ.get("STRIPE_LIVE_PUBLIC_KEY")
 STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY")
 STRIPE_TEST_PUBLIC_KEY = os.environ.get("STRIPE_TEST_PUBLIC_KEY")
