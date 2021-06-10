@@ -4,38 +4,91 @@
 #
 #    pip-compile
 #
-arrow==0.15.5             # via -r requirements.in, django-q
-asgiref==3.2.3            # via django
-blessed==1.17.5           # via django-q
-boto3==1.12.47            # via -r requirements.in
-botocore==1.15.47         # via boto3, s3transfer
-certifi==2020.4.5.1       # via requests
-chardet==3.0.4            # via requests
-dj-stripe==2.3.0          # via -r requirements.in
-django-markup==1.4.1      # via -r requirements.in
-django-picklefield==2.1.1  # via django-q
-django-q==1.2.1           # via -r requirements.in
-django-storages==1.8      # via -r requirements.in
-django==3.0               # via -r requirements.in, dj-stripe, django-markup, django-picklefield, django-q, django-storages, djangorestframework, jsonfield
-djangorestframework==3.11.0  # via -r requirements.in
-docutils==0.15.2          # via botocore
-feedparser==5.2.1         # via -r requirements.in
-gunicorn==20.0.4          # via -r requirements.in
-idna==2.9                 # via requests
-jmespath==0.9.5           # via boto3, botocore
-jsonfield==3.1.0          # via dj-stripe
-markdown==3.1.1           # via -r requirements.in
-pillow==7.1.2             # via -r requirements.in
-psycopg2-binary==2.8.5    # via -r requirements.in
-python-dateutil==2.8.0    # via arrow, botocore
-pytz==2019.3              # via django
-requests==2.23.0          # via stripe
-s3transfer==0.3.3         # via boto3
-six==1.13.0               # via blessed, django-markup, python-dateutil
-sqlparse==0.3.0           # via django
-stripe==2.46.0            # via dj-stripe
-urllib3==1.25.9           # via botocore, requests
-wcwidth==0.1.9            # via blessed
+arrow==0.15.5
+    # via
+    #   -r requirements.in
+    #   django-q
+asgiref==3.3.4
+    # via django
+blessed==1.17.5
+    # via django-q
+boto3==1.12.47
+    # via -r requirements.in
+botocore==1.15.47
+    # via
+    #   boto3
+    #   s3transfer
+certifi==2020.4.5.1
+    # via requests
+chardet==3.0.4
+    # via requests
+dj-stripe==2.3.0
+    # via -r requirements.in
+django-markup==1.4.1
+    # via -r requirements.in
+django-picklefield==2.1.1
+    # via django-q
+django-q==1.2.1
+    # via -r requirements.in
+django-storages==1.8
+    # via -r requirements.in
+django==3.1.12
+    # via
+    #   -r requirements.in
+    #   dj-stripe
+    #   django-markup
+    #   django-picklefield
+    #   django-q
+    #   django-storages
+    #   djangorestframework
+    #   jsonfield
+djangorestframework==3.11.0
+    # via -r requirements.in
+docutils==0.15.2
+    # via botocore
+feedparser==5.2.1
+    # via -r requirements.in
+gunicorn==20.0.4
+    # via -r requirements.in
+idna==2.9
+    # via requests
+jmespath==0.9.5
+    # via
+    #   boto3
+    #   botocore
+jsonfield==3.1.0
+    # via dj-stripe
+markdown==3.1.1
+    # via -r requirements.in
+pillow==7.1.2
+    # via -r requirements.in
+psycopg2-binary==2.8.5
+    # via -r requirements.in
+python-dateutil==2.8.0
+    # via
+    #   arrow
+    #   botocore
+pytz==2019.3
+    # via django
+requests==2.23.0
+    # via stripe
+s3transfer==0.3.3
+    # via boto3
+six==1.13.0
+    # via
+    #   blessed
+    #   django-markup
+    #   python-dateutil
+sqlparse==0.3.0
+    # via django
+stripe==2.46.0
+    # via dj-stripe
+urllib3==1.25.9
+    # via
+    #   botocore
+    #   requests
+wcwidth==0.1.9
+    # via blessed
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
